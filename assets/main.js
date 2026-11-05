@@ -3,14 +3,15 @@
 // ============================================
 
 // --- 文章分类 ---
-const filters = ["全部", "生活", "旅行", "技术", "随笔"];
-let active = "全部";
+var filters = ["全部", "生活", "旅行", "技术", "随笔"];
+var active = "全部";
 
 // --- DOM 引用 ---
-const grid = document.querySelector("#postGrid");
-const search = document.querySelector("#searchInput");
-const empty = document.querySelector("#emptyState");
-const dlg = document.querySelector("#articleDialog");
+var grid = document.querySelector("#postGrid");
+var search = document.querySelector("#searchInput");
+var empty = document.querySelector("#emptyState");
+var dlg = document.querySelector("#articleDialog");
+var postCount = document.querySelector("#postCount");
 
 // --- HTML 转义 ---
 function esc(s) {
@@ -25,12 +26,29 @@ function esc(s) {
   });
 }
 
+// --- 将正文按 \n\n 分段为 <p> ---
+function formatBody(text) {
+  return text.split(/\n\n+/).map(function (para) {
+    return "<p>" + esc(para.trim()) + "</p>";
+  }).join("");
+}
+
+// --- 更新文章计数 ---
+function updateCount(n) {
+  if (!postCount) return;
+  if (active === "全部") {
+    postCount.textContent = n + " STORIES";
+  } else {
+    postCount.textContent = active.toUpperCase() + " · " + n + " STORIES";
+  }
+}
+
 // --- 渲染文章列表 ---
 function render() {
-  const q = search.value.trim().toLowerCase();
-  const list = POSTS.filter(function (p) {
+  var q = search.value.trim().toLowerCase();
+  var list = POSTS.filter(function (p) {
     var matchCategory = active === "全部" || p.category === active;
-    var matchSearch = !q || (p.title + p.excerpt + p.category + p.body).toLowerCase().includes(q);
+    var matchSearch = !q || (p.title + p.excerpt + p.category + p.body).toLowerCase().indexOf(q) !== -1;
     return matchCategory && matchSearch;
   });
 
@@ -51,6 +69,7 @@ function render() {
   }).join("");
 
   empty.classList.toggle("hidden", list.length > 0);
+  updateCount(list.length);
 }
 
 // --- 渲染筛选按钮 ---
@@ -78,9 +97,18 @@ function openPost(id) {
     '<p class="eyebrow">' + esc(p.category) + " · " + esc(p.date) + " · " + esc(p.read) + '</p>' +
     '<h1>' + esc(p.title) + '</h1>' +
     '<img src="' + esc(p.image) + '" alt="' + esc(p.title) + '">' +
-    '<div class="article-body">' + esc(p.body) + '</div>';
+    '<div class="article-body">' + formatBody(p.body) + '</div>' +
+    '<span class="article-end-mark">END · 永不完结</span>';
 
   dlg.showModal();
+  // 锁定页面滚动
+  document.body.style.overflow = "hidden";
+}
+
+// --- 关闭弹窗 ---
+function closeDialog() {
+  dlg.close();
+  document.body.style.overflow = "";
 }
 
 // ============================================
@@ -118,28 +146,43 @@ grid.addEventListener("keydown", function (e) {
   }
 });
 
-// 关闭弹窗
-document.querySelector("#closeDialog").addEventListener("click", function () {
-  dlg.close();
-});
+// 关闭弹窗按钮
+document.querySelector("#closeDialog").addEventListener("click", closeDialog);
 
 // 点击遮罩关闭弹窗
 dlg.addEventListener("click", function (e) {
-  if (e.target === dlg) dlg.close();
+  if (e.target === dlg) closeDialog();
 });
 
-// ESC 关闭弹窗（dialog 原生支持，额外确保）
+// ESC 关闭弹窗
 document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape" && dlg.open) dlg.close();
+  if (e.key === "Escape" && dlg.open) closeDialog();
 });
 
-// --- 主题切换 ---
-// 默认深色，点击切换到浅色（light 类）
+// --- 主题切换（带 localStorage 记忆）---
 var themeBtn = document.querySelector("#themeToggle");
-themeBtn.addEventListener("click", function () {
-  var isLight = document.body.classList.toggle("light");
+var THEME_KEY = "ybwj-theme";
+
+function applyTheme(isLight) {
+  document.body.classList.toggle("light", isLight);
   themeBtn.setAttribute("aria-label", isLight ? "切换夜间模式" : "切换日间模式");
+}
+
+themeBtn.addEventListener("click", function () {
+  var isLight = !document.body.classList.contains("light");
+  applyTheme(isLight);
+  try {
+    localStorage.setItem(THEME_KEY, isLight ? "light" : "dark");
+  } catch (e) {}
 });
+
+// 页面加载时恢复主题偏好
+try {
+  var saved = localStorage.getItem(THEME_KEY);
+  if (saved === "light") {
+    applyTheme(true);
+  }
+} catch (e) {}
 
 // ============================================
 // 初始化

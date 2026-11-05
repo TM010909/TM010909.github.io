@@ -14,28 +14,38 @@
 :root {
   --paper: #171a1c;
   --ink: #e5e3dc;
+  --ink-soft: #c8c6be;
   --muted: #969a9b;
   --line: #343a3c;
   --accent: #b99b70;
+  --accent-soft: rgba(185, 155, 112, 0.15);
   --card: #202527;
   --card-hover: #282e30;
   --overlay: rgba(12, 16, 18, 0.7);
   --shadow: rgba(0, 0, 0, 0.5);
   --selection: rgba(185, 155, 112, 0.3);
+  --art-grad-1: #2a3a3e;
+  --art-grad-2: #1a2226;
+  --art-grad-3: #3a2e2a;
 }
 
 /* 浅色主题 */
 body.light {
   --paper: #f4f1ea;
   --ink: #2a2823;
+  --ink-soft: #4a4840;
   --muted: #8a857c;
   --line: #ddd8cc;
   --accent: #8a6a4a;
+  --accent-soft: rgba(138, 106, 74, 0.12);
   --card: #ebe7dd;
   --card-hover: #e0dccf;
   --overlay: rgba(255, 255, 255, 0.7);
   --shadow: rgba(0, 0, 0, 0.12);
   --selection: rgba(138, 106, 74, 0.2);
+  --art-grad-1: #d4c5a9;
+  --art-grad-2: #c9d9d6;
+  --art-grad-3: #e0cdb0;
 }
 
 html {
@@ -224,27 +234,77 @@ body {
   margin-left: 22px;
 }
 
-.hero-image {
+/* ---------- 首页艺术图形（替代外部图片） ---------- */
+.hero-art {
   height: 400px;
-  background:
-    linear-gradient(0deg, var(--overlay), transparent),
-    url('https://images.unsplash.com/photo-1473116763249-2eea817355e8?auto=format&fit=crop&w=1200&q=85')
-    center/cover;
-  filter: saturate(.65) brightness(.78);
-  border-radius: 2px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 30% 20%, var(--art-grad-1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, var(--art-grad-3) 0%, transparent 50%),
+    linear-gradient(135deg, var(--art-grad-2), var(--paper));
+  border-radius: 2px;
   overflow: hidden;
+  border: 1px solid var(--line);
 }
 
-/* 图片底部渐变叠加，增加文字可读性 */
-.hero-image::after {
-  content: "";
+.hero-art-ring {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(transparent, var(--paper));
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.12;
+  animation: ringPulse 6s ease-in-out infinite;
+}
+
+.hero-art-ring:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  animation-delay: 0s;
+}
+
+.hero-art-ring:nth-child(2) {
+  width: 220px;
+  height: 220px;
+  animation-delay: 1s;
+  opacity: 0.18;
+}
+
+.hero-art-ring:nth-child(3) {
+  width: 140px;
+  height: 140px;
+  animation-delay: 2s;
+  opacity: 0.25;
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.12; }
+  50% { transform: scale(1.08); opacity: 0.25; }
+}
+
+.hero-art-core {
+  font: 80px "DM Serif Display", serif;
+  color: var(--accent);
+  z-index: 2;
+  animation: coreFloat 5s ease-in-out infinite;
+}
+
+@keyframes coreFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hero-art-label {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  font: 8px Inter, sans-serif;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-align: right;
+  line-height: 1.8;
+  z-index: 2;
 }
 
 .hero-note {
@@ -393,6 +453,20 @@ body {
   overflow: hidden;
   background: var(--card);
   border-radius: 2px;
+  position: relative;
+}
+
+.post-card .cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, var(--card));
+  opacity: 0;
+  transition: opacity .4s;
+}
+
+.post-card:hover .cover::after {
+  opacity: 0.5;
 }
 
 .post-card img {
@@ -455,6 +529,14 @@ body {
 .post-card:focus .read-more {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* 触摸设备：read-more 始终可见 */
+@media (hover: none) {
+  .read-more {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .empty {
@@ -527,14 +609,42 @@ body {
   padding-bottom: 100px;
 }
 
-.about-image {
+/* 关于区域艺术图形 */
+.about-art {
   height: 320px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background:
-    linear-gradient(0deg, var(--overlay), transparent),
-    url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85')
-    center/cover;
-  filter: saturate(.65) brightness(.8);
+    radial-gradient(circle at 60% 40%, var(--art-grad-3) 0%, transparent 60%),
+    linear-gradient(160deg, var(--art-grad-2), var(--paper));
   border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.about-art-circle {
+  width: 180px;
+  height: 180px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.2;
+  animation: circleBreathe 7s ease-in-out infinite;
+}
+
+@keyframes circleBreathe {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  50% { transform: scale(1.15); opacity: 0.3; }
+}
+
+.about-art-dots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(var(--accent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.06;
 }
 
 .about p:not(.eyebrow) {
@@ -617,10 +727,28 @@ body {
   border-radius: 2px;
 }
 
+/* 正文：使用 ink-soft 而非 muted，提高可读性 */
 .article-dialog .article-body {
   font: 15px/2.3 "Noto Serif SC", serif;
-  color: var(--muted);
+  color: var(--ink-soft);
   white-space: pre-line;
+}
+
+/* 正文段落间距 */
+.article-dialog .article-body p {
+  margin-bottom: 1.4em;
+}
+
+/* 文章末尾结束标记 */
+.article-end-mark {
+  display: block;
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+  font: 10px Inter, sans-serif;
+  letter-spacing: 3px;
+  color: var(--muted);
 }
 
 /* ---------- 滚动条美化 ---------- */
@@ -676,8 +804,8 @@ body {
     min-height: auto;
   }
 
-  .hero-image {
-    height: 260px;
+  .hero-art {
+    height: 280px;
     grid-row: 1;
   }
 
@@ -748,7 +876,7 @@ body {
     padding-bottom: 65px;
   }
 
-  .about-image {
+  .about-art {
     height: 220px;
   }
 
@@ -775,6 +903,16 @@ body {
   .article-dialog .article-body {
     font-size: 14px;
     line-height: 2.1;
+  }
+
+  .hero-art-core {
+    font-size: 60px;
+  }
+
+  .hero-art-label {
+    font-size: 7px;
+    bottom: 16px;
+    right: 16px;
   }
 }
 

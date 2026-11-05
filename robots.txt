@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://TM010909.github.io/sitemap.xml

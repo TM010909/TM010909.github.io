@@ -13,40 +13,42 @@
 /* ---------- 主题变量 ---------- */
 /* 默认深色主题 */
 :root {
-  --paper: #171a1c;
-  --ink: #e5e3dc;
-  --ink-soft: #c8c6be;
-  --muted: #969a9b;
-  --line: #343a3c;
-  --control-line: #4c5254;
-  --accent: #b99b70;
-  --card: #202527;
-  --shadow: rgba(0, 0, 0, 0.5);
-  --selection: rgba(185, 155, 112, 0.3);
-  --art-grad-1: #2a3a3e;
-  --art-grad-2: #1a2226;
-  --art-grad-3: #3a2e2a;
-  --rule: rgba(120, 150, 160, 0.13);
-  --accent-soft: rgba(185, 155, 112, 0.22);
+  --paper: #13171a;
+  --ink: #edeae1;
+  --ink-soft: #cbc9c1;
+  --muted: #8c9092;
+  --line: #2f3538;
+  --control-line: #474d50;
+  --accent: #c8a26b;
+  --accent-2: #7fa39b;
+  --card: #1b2023;
+  --shadow: rgba(0, 0, 0, 0.55);
+  --selection: rgba(200, 162, 107, 0.3);
+  --art-grad-1: #243538;
+  --art-grad-2: #161e22;
+  --art-grad-3: #352a26;
+  --rule: rgba(130, 160, 168, 0.14);
+  --accent-soft: rgba(200, 162, 107, 0.22);
 }
 
 /* 浅色主题 */
 body.light {
-  --paper: #f4f1ea;
-  --ink: #2a2823;
-  --ink-soft: #4a4840;
-  --muted: #8a857c;
-  --line: #ddd8cc;
-  --control-line: #c8c0b0;
-  --accent: #8a6a4a;
-  --card: #ebe7dd;
-  --shadow: rgba(0, 0, 0, 0.12);
-  --selection: rgba(138, 106, 74, 0.2);
-  --art-grad-1: #d4c5a9;
-  --art-grad-2: #c9d9d6;
-  --art-grad-3: #e0cdb0;
+  --paper: #f2ece1;
+  --ink: #241f19;
+  --ink-soft: #4c4840;
+  --muted: #8b867c;
+  --line: #ddd5c6;
+  --control-line: #c6bdac;
+  --accent: #9a6f43;
+  --accent-2: #5e8478;
+  --card: #eae4d8;
+  --shadow: rgba(0, 0, 0, 0.14);
+  --selection: rgba(154, 111, 67, 0.22);
+  --art-grad-1: #d6c7ab;
+  --art-grad-2: #cbd9d6;
+  --art-grad-3: #e2cdb0;
   --rule: rgba(80, 120, 140, 0.16);
-  --accent-soft: rgba(138, 106, 74, 0.28);
+  --accent-soft: rgba(154, 111, 67, 0.26);
 }
 
 html {
@@ -351,14 +353,65 @@ body.pointer-active .cursor-glow {
   font-weight: 600;
 }
 
+/* 刊头条 */
+.hero-masthead {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 13px 0;
+  margin-bottom: 44px;
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.hero-masthead-right {
+  color: var(--accent);
+}
+
 .hero h1 {
-  font: clamp(34px, 4.5vw, 58px)/1.45 "Noto Serif SC", serif;
-  letter-spacing: 1px;
-  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 22px 0 28px;
   font-weight: 600;
 }
 
-.hero h1 em,
+.hero h1 .hl {
+  font: clamp(40px, 5.6vw, 74px)/1.1 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+}
+
+.hero h1 .hl-sub {
+  font-style: normal;
+  color: var(--accent);
+  font: clamp(24px, 3.4vw, 40px)/1.3 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+/* 首屏左下竖排注脚 */
+.hero-rail {
+  position: absolute;
+  left: -20px;
+  bottom: 16px;
+  writing-mode: vertical-rl;
+  display: flex;
+  gap: 20px;
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: 4px;
+  color: var(--muted);
+}
+
+.hero-rail b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .category-feature h2 em,
 .about h2 em {
   font-style: normal;
@@ -541,15 +594,54 @@ body.pointer-active .cursor-glow {
   letter-spacing: 2px;
 }
 
+/* ---------- 章节分隔符：∞ + 细线（贯穿全站的符号语言） ---------- */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 4px 0;
+  color: var(--accent);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.divider span {
+  font: 17px "DM Serif Display", serif;
+  opacity: .7;
+}
+
 /* ---------- 文章区域 ---------- */
 .section {
   padding: 90px 0;
 }
 
+/* 杂志式分章：大号编号 + 中文标题 + 英文副题 */
 .section-heading {
   display: flex;
-  justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
+  gap: 26px;
+  margin-bottom: 4px;
+}
+
+.sh-num {
+  font: 400 clamp(42px, 6.2vw, 76px)/0.8 "DM Serif Display", serif;
+  color: var(--accent);
+  opacity: .5;
+}
+
+.sh-num-inline {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.sh-body {
+  flex: 1;
 }
 
 .section-heading h2,
@@ -558,6 +650,12 @@ body.pointer-active .cursor-glow {
   font: 32px/1.5 "Noto Serif SC", serif;
   margin: 8px 0;
   font-weight: 600;
+}
+
+.cf-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
 }
 
 .muted {
@@ -878,6 +976,12 @@ body.light .sc-paper { fill: #f6f2e8; }
 .post-meta .tag {
   color: var(--accent);
   font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.post-meta .tag::before {
+  content: "∞ ";
+  opacity: .55;
 }
 
 .post-card h3 {
@@ -1183,12 +1287,36 @@ body.light .sc-paper { fill: #f6f2e8; }
 .article-dialog .article-body {
   font: 15px/2.3 "Noto Serif SC", serif;
   color: var(--ink-soft);
+  max-width: 38em;
+  margin: 0 auto;
 }
 
-/* 中文书刊式排版：首行缩进两字 */
+/* 中文书刊式排版：首行缩进两字（首段留给首字下沉，不缩进） */
 .article-dialog .article-body p {
   text-indent: 2em;
   margin-bottom: .8em;
+}
+
+.article-dialog .article-body p:first-of-type {
+  text-indent: 0;
+}
+
+/* 首字下沉：首段首字放大，像翻开一页书 */
+.article-dialog .article-body p:first-of-type::first-letter {
+  float: left;
+  font: 700 3.1em/0.78 "DM Serif Display", serif;
+  color: var(--accent);
+  margin: 8px 12px -2px 0;
+}
+
+/* 引用块：左线竖引（文章内容如含引用时使用） */
+.article-dialog .article-body blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 18px;
+  margin: 1.3em 0;
+  color: var(--ink);
+  font-style: italic;
+  text-indent: 0;
 }
 
 /* 弹窗内容依次浮现 */
@@ -1278,6 +1406,28 @@ body.light .sc-paper { fill: #f6f2e8; }
 
   .hero h1 {
     font-size: clamp(28px, 8vw, 40px);
+  }
+
+  .hero-masthead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+  }
+
+  .hero-rail {
+    display: none;
+  }
+
+  .section-heading,
+  .cf-head {
+    gap: 14px;
+  }
+
+  .sh-num {
+    font-size: clamp(34px, 11vw, 52px);
   }
 
   .intro-strip {

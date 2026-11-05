@@ -346,6 +346,28 @@ body.pointer-active .cursor-glow {
   padding-bottom: 84px;
 }
 
+/* 首屏底层：极淡的巨大 ∞ 水印 */
+.hero-watermark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 400 min(76vw, 880px)/1 "DM Serif Display", serif;
+  color: var(--accent);
+  opacity: .035;
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(-6deg);
+  overflow: hidden;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
 .eyebrow {
   font: 11px "Noto Serif SC", serif;
   letter-spacing: 3px;
@@ -384,6 +406,21 @@ body.pointer-active .cursor-glow {
 .hero h1 .hl {
   font: clamp(46px, 6.2vw, 86px)/1.04 "Noto Serif SC", serif;
   letter-spacing: 1px;
+}
+
+/* 第一行：空心描边字，压住出血的墨迹 */
+.hero h1 .hl:first-of-type {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent);
+  text-shadow: 0 0 34px var(--accent-soft);
+}
+
+/* 第二行：白到浅金的渐变实心字 */
+.hero h1 .hl:nth-of-type(2) {
+  background: linear-gradient(180deg, #ffffff 18%, #d6cfc0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hero h1 .hl-sub {
@@ -455,12 +492,13 @@ body.pointer-active .cursor-glow {
 .hero-art {
   height: 480px;
   position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* 笔记本横格纸 + 左侧装订线（边缘径向淡出，去掉卡片框感） */
@@ -536,7 +574,8 @@ body.pointer-active .cursor-glow {
 .ink-path {
   position: relative;
   z-index: 3;
-  width: min(560px, 100%);
+  width: min(680px, 120%);
+  transform: translateX(-8%);
   overflow: visible;
 }
 
@@ -559,10 +598,10 @@ body.pointer-active .cursor-glow {
 .ink-trail-soft {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 16;
+  stroke-width: 15;
   stroke-linecap: round;
-  opacity: .10;
-  filter: blur(7px);
+  opacity: .07;
+  filter: blur(8px);
 }
 
 /* 首屏墨晕：一团缓慢呼吸的暖色柔光 */
@@ -1558,6 +1597,12 @@ body.light .sc-paper { fill: #f6f2e8; }
 
   .ink-path {
     width: 260px;
+    transform: none;
+  }
+
+  .hero-watermark {
+    font-size: min(150vw, 620px);
+    opacity: .03;
   }
 
   .hero-art-label {

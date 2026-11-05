@@ -35,6 +35,11 @@
 </head>
 <body id="top">
 
+<!-- 纸张颗粒 / 光晕 / 阅读进度 -->
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
 <header class="site-header wrap">
   <a class="brand" href="#top">
     <span class="brand-mark">∞</span>
@@ -81,26 +86,31 @@
     <div class="hero-art-ring"></div>
     <div class="hero-art-core">∞</div>
     <div class="hero-art-label">第 1 页<br>后面还有很多页</div>
+    <div class="hero-art-orbit"></div>
   </div>
 </section>
 
 
-    <section class="wrap intro-strip">
+    <section class="wrap intro-strip" data-reveal>
       <span>不追热点</span><span>不赶进度</span><span>想到就写</span>
       <span class="strip-right">生活 · 旅行 · 技术 · 随笔</span>
     </section>
 
     <section id="latest" class="wrap section">
-      <div class="section-heading"><div><p class="eyebrow">最近</p><h2>写下来的</h2></div><span class="muted" id="postCount">共 4 篇</span></div>
-      <div class="toolbar">
+      <div class="section-heading" data-reveal><div><p class="eyebrow">最近</p><h2>写下来的</h2></div><span class="muted" id="postCount">共 4 篇</span></div>
+      <div class="toolbar" data-reveal>
         <div id="filters" class="filters"></div>
-        <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="找点什么…" aria-label="搜索文章"></label>
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="找点什么…" aria-label="搜索文章">
+          <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
+        </label>
       </div>
       <div id="postGrid" class="post-grid"></div>
       <p id="emptyState" class="empty hidden">没找到。换个词，或者看看别的分类。</p>
     </section>
 
-    <section id="categories" class="wrap category-feature">
+    <section id="categories" class="wrap category-feature" data-reveal>
       <div><p class="eyebrow">按标签翻</p><h2>写得不多，<br><em>但都在这儿。</em></h2></div>
       <div class="category-list">
         <a href="#latest" data-category-link="生活"><span>01</span>生活 <b>↗</b></a>
@@ -111,15 +121,15 @@
     </section>
 
     <section id="about" class="wrap about">
-      <div class="about-art" aria-hidden="true">
+      <div class="about-art" aria-hidden="true" data-reveal>
         <div class="about-art-circle"></div>
         <div class="about-art-dots"></div>
       </div>
-      <div>
+      <div data-reveal>
         <p class="eyebrow">关于这里，和我</p>
         <h2>没有主题，<br><em>也没打算有。</em></h2>
         <p>我是铜香哭哭死。这个站没有更新计划，也不设栏目目标——生活、路上、代码、读过的书，想到什么就放什么。写得不勤，但会一直写下去。多年以后回来看，希望还能认出当时那个较真的自己。</p>
-        <a class="text-link" href="https://github.com/TM010909" target="_blank" rel="noopener noreferrer">去 GitHub 找我 <span>↗</span></a>
+        <a class="text-link" href="mailto:1219093662@qq.com">写信给我 <span>↗</span></a>
       </div>
     </section>
   </main>
@@ -132,6 +142,8 @@
     <span>© 2026 永不完结 · 铜香哭哭死</span>
     <a href="#top">回到顶部 ↑</a>
   </footer>
+
+  <button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
 
   <dialog id="articleDialog" class="article-dialog">
     <button class="dialog-close" id="closeDialog" aria-label="关闭">×</button>

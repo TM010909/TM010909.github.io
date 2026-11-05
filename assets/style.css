@@ -18,6 +18,7 @@
   --ink-soft: #c8c6be;
   --muted: #969a9b;
   --line: #343a3c;
+  --control-line: #4c5254;
   --accent: #b99b70;
   --card: #202527;
   --shadow: rgba(0, 0, 0, 0.5);
@@ -34,6 +35,7 @@ body.light {
   --ink-soft: #4a4840;
   --muted: #8a857c;
   --line: #ddd8cc;
+  --control-line: #c8c0b0;
   --accent: #8a6a4a;
   --card: #ebe7dd;
   --shadow: rgba(0, 0, 0, 0.12);
@@ -58,6 +60,150 @@ body {
 
 ::selection {
   background: var(--selection);
+}
+
+/* ---------- 纸张颗粒质感 ---------- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  opacity: .04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- 鼠标柔光（仅精确指针设备） ---------- */
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgba(185, 155, 112, .07), transparent 68%);
+  transition: opacity .8s ease;
+}
+
+body.pointer-active .cursor-glow {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-glow { display: none; }
+}
+
+/* ---------- 顶部阅读进度 ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 200;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--accent), var(--ink-soft));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------- 回到顶部 ---------- */
+.to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 150;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--control-line);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 17px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity .35s, transform .35s, border-color .25s, color .25s;
+}
+
+.to-top.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-3px);
+}
+
+/* ---------- 滚动入场 ---------- */
+/* 元素默认始终可见；observer 触发时播放一次淡入。
+   即使脚本或 observer 完全不工作，也不会出现内容留白。 */
+.reveal-ready [data-reveal].revealed {
+  animation: revealIn .75s cubic-bezier(.2, .7, .2, 1) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes revealIn {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- 首屏入场 ---------- */
+.hero-copy > * {
+  animation: heroIn .85s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.hero-copy > *:nth-child(1) { animation-delay: .06s; }
+.hero-copy > *:nth-child(2) { animation-delay: .20s; }
+.hero-copy > *:nth-child(3) { animation-delay: .34s; }
+.hero-copy > *:nth-child(4) { animation-delay: .48s; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero-art {
+  animation: artIn 1.1s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+@keyframes artIn {
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- 主题切换：圆形扩散（View Transitions 渐进增强） ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
+@keyframes themeReveal {
+  from { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0)); }
+  to   { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 0)); }
+}
+
+::view-transition-new(root) {
+  animation: themeReveal .65s cubic-bezier(.3, .7, .3, 1) both;
+}
+
+/* ---------- 尊重系统「减少动态效果」 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-ready [data-reveal].revealed { animation: none; }
+  .cursor-glow { display: none; }
 }
 
 .wrap {
@@ -138,12 +284,18 @@ body {
 }
 
 .site-header nav a:hover,
+.site-header nav a.current,
 .footer a:hover {
   color: var(--accent);
 }
 
+/* 滚动到对应区块时高亮导航 */
+.site-header nav a.current::after {
+  width: 100%;
+}
+
 .icon-btn {
-  border: 1px solid var(--line);
+  border: 1px solid var(--control-line);
   background: var(--card);
   color: var(--ink);
   border-radius: 50%;
@@ -243,6 +395,33 @@ body {
   border-radius: 2px;
   overflow: hidden;
   border: 1px solid var(--line);
+}
+
+/* 缓慢旋转的虚线星轨 */
+.hero-art-orbit {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border: 1px dashed var(--accent);
+  border-radius: 50%;
+  opacity: .2;
+  animation: orbitSpin 48s linear infinite;
+}
+
+.hero-art-orbit::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
 }
 
 .hero-art-ring {
@@ -412,6 +591,32 @@ body {
   opacity: 0.6;
 }
 
+/* 隐藏浏览器自带的清除按钮，使用统一的自定义按钮 */
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-clear {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color .2s;
+}
+
+.search-clear:hover {
+  color: var(--accent);
+}
+
+.search-clear[hidden] {
+  display: none;
+}
+
 /* ---------- 文章卡片 ---------- */
 .post-grid {
   display: grid;
@@ -422,6 +627,14 @@ body {
 .post-card {
   cursor: pointer;
   transition: transform .35s ease;
+  /* 逐张入场：backwards 只保留起始帧，动画结束后 hover 的 transform 不受影响 */
+  animation: cardIn .6s cubic-bezier(.2, .7, .2, 1) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
 }
 
 .post-card:hover {
@@ -448,6 +661,22 @@ body {
 
 .post-card:hover .cover::after {
   opacity: 0.35;
+}
+
+/* 悬停时一道柔光斜扫过封面 */
+.post-card .cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .13) 50%, transparent 62%);
+  transform: translateX(-130%);
+  transition: transform .85s cubic-bezier(.2, .7, .2, 1);
+}
+
+.post-card:hover .cover::before {
+  transform: translateX(130%);
 }
 
 .post-card img {
@@ -708,6 +937,11 @@ body {
   padding-bottom: 100px;
 }
 
+/* 关于区右侧文字稍晚入场 */
+.about > div:nth-child(2) {
+  --reveal-delay: 120ms;
+}
+
 .about-art {
   height: 320px;
   position: relative;
@@ -838,8 +1072,26 @@ body {
   color: var(--ink-soft);
 }
 
+/* 中文书刊式排版：首行缩进两字 */
 .article-dialog .article-body p {
-  margin-bottom: 1.4em;
+  text-indent: 2em;
+  margin-bottom: .8em;
+}
+
+/* 弹窗内容依次浮现 */
+.article-dialog #articleContent > * {
+  animation: articleIn .5s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.article-dialog #articleContent > *:nth-child(1) { animation-delay: .05s; }
+.article-dialog #articleContent > *:nth-child(2) { animation-delay: .11s; }
+.article-dialog #articleContent > *:nth-child(3) { animation-delay: .17s; }
+.article-dialog #articleContent > *:nth-child(4) { animation-delay: .23s; }
+.article-dialog #articleContent > *:nth-child(5) { animation-delay: .29s; }
+
+@keyframes articleIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
 }
 
 .article-end-mark {
@@ -1019,6 +1271,22 @@ body {
     font-size: 8px;
     bottom: 16px;
     right: 16px;
+  }
+
+  .hero-art-orbit {
+    width: 260px;
+    height: 260px;
+  }
+
+  .to-top {
+    right: 18px;
+    bottom: 18px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .cursor-glow {
+    display: none;
   }
 }
 

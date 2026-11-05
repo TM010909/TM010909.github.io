@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="关于生活、技术、旅行与个人思考的独立杂志。">
+  <title>未完待续 — Somewhere Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="#"><span class="brand-mark">S.</span><span><b>未完待续</b><small>SOMEWHERE JOURNAL</small></span></a>
+    <nav><a href="#latest">文章</a><a href="#categories">分类</a><a href="#about">关于</a></nav>
+    <button id="themeToggle" class="icon-btn" aria-label="切换夜间模式">◐</button>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">A PERSONAL MAGAZINE · EST. 2026</p>
+        <h1>在日常生活之外，<br><em>记录自己的世界。</em></h1>
+        <p class="hero-desc">关于生活、技术、旅行，以及那些值得留下来的思考。这里没有必须抵达的终点，只有持续发生的故事。</p>
+        <a class="text-link" href="#latest">开始阅读 <span>↗</span></a>
+      </div>
+      <div class="hero-image" role="img" aria-label="海岸与山峦的风景"></div>
+      <div class="hero-note">VOL. 01 <span>·</span> NOTES FROM EVERYWHERE</div>
+    </section>
+
+    <section class="wrap intro-strip">
+      <span>独立记录</span><span>慢一点阅读</span><span>持续更新</span>
+      <span class="strip-right">WORDS, IMAGES &amp; IDEAS</span>
+    </section>
+
+    <section id="latest" class="wrap section">
+      <div class="section-heading"><div><p class="eyebrow">THE JOURNAL</p><h2>最近的故事</h2></div><span class="muted">LATEST STORIES</span></div>
+      <div class="toolbar">
+        <div id="filters" class="filters"></div>
+        <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索文章…" aria-label="搜索文章"></label>
+      </div>
+      <div id="postGrid" class="post-grid"></div>
+      <p id="emptyState" class="empty hidden">没有找到相关文章，试试其他关键词。</p>
+    </section>
+
+    <section id="categories" class="wrap category-feature">
+      <div><p class="eyebrow">EXPLORE BY TOPIC</p><h2>从兴趣出发，<br><em>找到下一篇故事。</em></h2></div>
+      <div class="category-list">
+        <a href="#latest" data-category-link="生活"><span>01</span>生活 <b>↗</b></a>
+        <a href="#latest" data-category-link="旅行"><span>02</span>旅行 <b>↗</b></a>
+        <a href="#latest" data-category-link="技术"><span>03</span>技术 <b>↗</b></a>
+        <a href="#latest" data-category-link="随笔"><span>04</span>随笔 <b>↗</b></a>
+      </div>
+    </section>
+
+    <section id="about" class="wrap about">
+      <div class="about-image"></div>
+      <div><p class="eyebrow">A LITTLE ABOUT THIS PLACE</p><h2>一个属于自己的<br><em>小小数字空间。</em></h2><p>这里用来收集生活的切片、旅途中的风景、技术实践，以及偶尔冒出来的念头。希望多年以后回看，仍然能认出当时的自己。</p><a class="text-link" href="mailto:hello@example.com">写信给我 <span>↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer"><a class="brand" href="#"><span class="brand-mark">S.</span><span><b>未完待续</b><small>SOMEWHERE JOURNAL</small></span></a><span>© 2026 SOMEWHERE. ALL RIGHTS RESERVED.</span><a href="#top">回到顶部 ↑</a></footer>
+
+  <dialog id="articleDialog" class="article-dialog"><button class="dialog-close" id="closeDialog" aria-label="关闭">×</button><div id="articleContent"></div></dialog>
+  <script src="assets/posts.js"></script>
+  <script src="assets/main.js"></script>
+</body>
+</html>

@@ -26,6 +26,8 @@
   --art-grad-1: #2a3a3e;
   --art-grad-2: #1a2226;
   --art-grad-3: #3a2e2a;
+  --rule: rgba(120, 150, 160, 0.13);
+  --accent-soft: rgba(185, 155, 112, 0.22);
 }
 
 /* 浅色主题 */
@@ -43,6 +45,8 @@ body.light {
   --art-grad-1: #d4c5a9;
   --art-grad-2: #c9d9d6;
   --art-grad-3: #e0cdb0;
+  --rule: rgba(80, 120, 140, 0.16);
+  --accent-soft: rgba(138, 106, 74, 0.28);
 }
 
 html {
@@ -104,6 +108,19 @@ body.pointer-active .cursor-glow {
   background: linear-gradient(90deg, var(--accent), var(--ink-soft));
   transform: scaleX(0);
   transform-origin: 0 50%;
+}
+
+/* ---------- 随阅读向下生长的墨线 ---------- */
+.ink-thread {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: linear-gradient(var(--accent), rgba(185, 155, 112, 0));
+  opacity: .55;
 }
 
 /* ---------- 回到顶部 ---------- */
@@ -381,20 +398,37 @@ body.pointer-active .cursor-glow {
   margin-left: 22px;
 }
 
-/* ---------- 首页艺术图形 ---------- */
+/* ---------- 首页艺术图形：一本摊开的笔记本，正被一遍遍写上 ∞ ---------- */
 .hero-art {
   height: 400px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 30% 20%, var(--art-grad-1) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, var(--art-grad-3) 0%, transparent 50%),
-    linear-gradient(135deg, var(--art-grad-2), var(--paper));
+  background: var(--paper);
   border-radius: 2px;
   overflow: hidden;
   border: 1px solid var(--line);
+  box-shadow: 0 24px 60px -34px var(--shadow);
+}
+
+/* 笔记本横格纸 + 左侧装订线 */
+.notebook-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, transparent 42px, var(--rule) 42px, var(--rule) 43px, transparent 43px),
+    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px);
+}
+
+.notebook-lines::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 42px;
+  background: linear-gradient(90deg, var(--rule), transparent);
+  opacity: .6;
 }
 
 /* 缓慢旋转的虚线星轨 */
@@ -404,7 +438,8 @@ body.pointer-active .cursor-glow {
   height: 360px;
   border: 1px dashed var(--accent);
   border-radius: 50%;
-  opacity: .2;
+  opacity: .18;
+  z-index: 1;
   animation: orbitSpin 48s linear infinite;
 }
 
@@ -424,60 +459,63 @@ body.pointer-active .cursor-glow {
   to { transform: rotate(360deg); }
 }
 
+/* 三层同心圆（像杯子的水渍 / 写坏的草稿） */
 .hero-art-ring {
   position: absolute;
   border: 1px solid var(--accent);
   border-radius: 50%;
-  opacity: 0.12;
-  animation: ringPulse 6s ease-in-out infinite;
+  opacity: .1;
+  z-index: 1;
+  animation: ringPulse 7s ease-in-out infinite;
 }
 
-.hero-art-ring:nth-child(1) {
-  width: 300px;
-  height: 300px;
-  animation-delay: 0s;
-}
-
-.hero-art-ring:nth-child(2) {
-  width: 220px;
-  height: 220px;
-  animation-delay: 1s;
-  opacity: 0.18;
-}
-
-.hero-art-ring:nth-child(3) {
-  width: 140px;
-  height: 140px;
-  animation-delay: 2s;
-  opacity: 0.25;
-}
+.hero-art-ring.ring-1 { width: 320px; height: 320px; animation-delay: 0s; }
+.hero-art-ring.ring-2 { width: 230px; height: 230px; animation-delay: 1.2s; opacity: .14; }
+.hero-art-ring.ring-3 { width: 150px; height: 150px; animation-delay: 2.4s; opacity: .2; }
 
 @keyframes ringPulse {
-  0%, 100% { transform: scale(1); opacity: 0.12; }
-  50% { transform: scale(1.08); opacity: 0.25; }
+  0%, 100% { transform: scale(1); opacity: .08; }
+  50% { transform: scale(1.06); opacity: .2; }
 }
 
-.hero-art-core {
-  font: 80px "DM Serif Display", serif;
-  color: var(--accent);
-  z-index: 2;
-  animation: coreFloat 5s ease-in-out infinite;
+/* 被一笔笔写出来的 ∞ */
+.ink-path {
+  position: relative;
+  z-index: 3;
+  width: 300px;
+  max-width: 74%;
+  overflow: visible;
 }
 
-@keyframes coreFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+.ink-trail {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: inkDraw 3.4s cubic-bezier(.6, .05, .25, 1) forwards;
+  filter: drop-shadow(0 0 6px var(--accent-soft));
+}
+
+@keyframes inkDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.ink-tip {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 9px var(--accent));
 }
 
 .hero-art-label {
   position: absolute;
-  bottom: 24px;
-  right: 24px;
+  bottom: 22px;
+  right: 22px;
+  z-index: 4;
   font: 9px/1.9 "Noto Serif SC", serif;
   letter-spacing: 2px;
   color: var(--muted);
   text-align: right;
-  z-index: 2;
 }
 
 /* ---------- 首页信息条 ---------- */
@@ -692,7 +730,7 @@ body.pointer-active .cursor-glow {
   filter: saturate(1) brightness(1);
 }
 
-/* ---------- 分类抽象封面（CSS 绘制） ---------- */
+/* ---------- 分类封面：四幅会动的微型场景插画（纯 SVG） ---------- */
 .cover-art {
   position: relative;
   width: 100%;
@@ -703,111 +741,129 @@ body.pointer-active .cursor-glow {
   overflow: hidden;
 }
 
-.cover-art::before,
-.cover-art::after {
-  content: "";
+/* 大类水印字 */
+.cover-art-label {
   position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.cover-art-glyph {
-  position: relative;
-  z-index: 2;
-  font: 700 clamp(68px, 8vw, 100px)/1 "Noto Serif SC", serif;
+  z-index: 1;
+  font: 700 clamp(54px, 7vw, 92px)/1 "Noto Serif SC", serif;
   color: var(--ink);
-  opacity: .13;
+  opacity: .06;
   user-select: none;
-  transition: transform .6s ease, opacity .6s ease;
+  letter-spacing: 4px;
 }
 
-.post-card:hover .cover-art-glyph {
-  transform: scale(1.08);
-  opacity: .2;
-}
-
+/* 角标 ∞ */
 .cover-art-mark {
   position: absolute;
-  right: 16px;
+  right: 14px;
   bottom: 10px;
+  z-index: 3;
+  font: 16px "DM Serif Display", serif;
+  color: var(--sc-accent, var(--accent));
+  opacity: .65;
+}
+
+/* 场景插画容器 */
+.scene {
+  position: relative;
   z-index: 2;
-  font: 18px "DM Serif Display", serif;
-  color: var(--accent);
-  opacity: .6;
+  width: 74%;
+  height: auto;
+  overflow: visible;
+  transition: transform .55s cubic-bezier(.2, .7, .2, 1);
 }
 
-/* 生活：暖陶土 + 同心圆 */
+.post-card:hover .scene {
+  transform: scale(1.05);
+}
+
+.scene * { vector-effect: non-scaling-stroke; }
+
+/* 场景配色（主题感知，按分类覆盖 --sc-accent 等） */
+.sc-line { fill: none; stroke: var(--sc-ink); stroke-width: 1.4; }
+.sc-fill { fill: var(--sc-accent); }
+.sc-fill-soft { fill: var(--sc-accent-soft); }
+.sc-light { fill: var(--sc-light); }
+.sc-paper { fill: var(--sc-paper); stroke: var(--sc-line-c); stroke-width: 1; }
+.sc-dot { fill: var(--sc-accent); }
+.sc-code rect { fill: var(--sc-ink); opacity: .5; }
+.sc-cursor { fill: var(--sc-accent); animation: cursorBlink 1.1s steps(1) infinite; }
+.sc-strong { fill: var(--sc-strong); }
+.sc-ink { fill: var(--sc-accent); }
+.sc-moon { fill: var(--sc-moon); }
+.sc-road { fill: none; stroke: var(--sc-road); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1 8; opacity: .8; }
+
+@keyframes cursorBlink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+/* 生活：暖陶土 · 窗台盆栽 */
 .cover-art-life {
-  background: radial-gradient(circle at 28% 24%, rgba(206, 158, 98, .32), transparent 58%), var(--card);
+  background:
+    radial-gradient(circle at 26% 22%, var(--sc-accent-soft), transparent 62%),
+    var(--card);
+  --sc-accent: #c98a5e;
+  --sc-accent-soft: rgba(201, 138, 94, .22);
+  --sc-ink: #c9c2b4;
+  --sc-paper: #2a2f31;
+  --sc-line-c: rgba(201, 138, 94, .35);
+  --sc-light: rgba(201, 138, 94, .16);
+  --sc-strong: #e0b78f;
+  --sc-moon: #e8dcc0;
+  --sc-road: #c98a5e;
 }
 
-.cover-art-life::before {
-  width: 150px; height: 150px;
-  border: 1px solid var(--accent);
-  opacity: .26;
-}
-
-.cover-art-life::after {
-  width: 240px; height: 240px;
-  border: 1px solid var(--accent);
-  opacity: .12;
-}
-
-/* 旅行：青蓝 + 斜向地平线 */
+/* 旅行：青蓝 · 山海与路 */
 .cover-art-travel {
   background:
-    linear-gradient(160deg, rgba(96, 152, 160, .32), transparent 55%),
-    radial-gradient(circle at 76% 80%, rgba(70, 120, 130, .3), transparent 60%),
+    radial-gradient(circle at 74% 78%, var(--sc-accent-soft), transparent 60%),
     var(--card);
+  --sc-accent: #69a6a6;
+  --sc-accent-soft: rgba(105, 166, 166, .22);
+  --sc-ink: #c9c2b4;
+  --sc-paper: #2a2f31;
+  --sc-line-c: rgba(105, 166, 166, .35);
+  --sc-light: rgba(105, 166, 166, .15);
+  --sc-strong: #9fd0d0;
+  --sc-moon: #e8dcc0;
+  --sc-road: #8fc3c3;
 }
 
-.cover-art-travel::before,
-.cover-art-travel::after {
-  width: 140%; height: 1px;
-  border-radius: 0;
-  background: var(--accent);
-  transform: rotate(-12deg);
-}
-
-.cover-art-travel::before { opacity: .38; }
-.cover-art-travel::after { opacity: .18; transform: rotate(-12deg) translateY(42px); }
-
-/* 技术：灰蓝 + 网格 */
+/* 技术：灰蓝 · 终端光标 */
 .cover-art-tech {
-  background: radial-gradient(circle at 72% 26%, rgba(120, 136, 180, .3), transparent 60%), var(--card);
+  background:
+    radial-gradient(circle at 70% 24%, var(--sc-accent-soft), transparent 60%),
+    var(--card);
+  --sc-accent: #7fa3c9;
+  --sc-accent-soft: rgba(127, 163, 201, .2);
+  --sc-ink: #c9c2b4;
+  --sc-paper: #23292c;
+  --sc-line-c: rgba(127, 163, 201, .32);
+  --sc-light: rgba(127, 163, 201, .12);
+  --sc-strong: #bcd4ec;
+  --sc-moon: #e8dcc0;
+  --sc-road: #7fa3c9;
 }
 
-.cover-art-tech::before {
-  inset: 0;
-  width: 100%; height: 100%;
-  border-radius: 0;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: .45;
-}
-
-.cover-art-tech::after { display: none; }
-
-/* 随笔：褐紫 + 错位圆弧 */
+/* 随笔：褐紫 · 信纸与笔 */
 .cover-art-note {
-  background: radial-gradient(circle at 34% 72%, rgba(168, 126, 146, .3), transparent 62%), var(--card);
+  background:
+    radial-gradient(circle at 32% 70%, var(--sc-accent-soft), transparent 62%),
+    var(--card);
+  --sc-accent: #b389a0;
+  --sc-accent-soft: rgba(179, 137, 160, .22);
+  --sc-ink: #c9c2b4;
+  --sc-paper: #2a2f31;
+  --sc-line-c: rgba(179, 137, 160, .35);
+  --sc-light: rgba(179, 137, 160, .14);
+  --sc-strong: #e0bcce;
+  --sc-moon: #e8dcc0;
+  --sc-road: #b389a0;
 }
 
-.cover-art-note::before {
-  width: 240px; height: 240px;
-  border: 1px solid var(--accent);
-  opacity: .2;
-  transform: translate(38%, -26%);
-}
-
-.cover-art-note::after {
-  width: 120px; height: 120px;
-  border: 1px dashed var(--accent);
-  opacity: .24;
-  transform: translate(-34%, 30%);
-}
+/* 浅色主题下的场景插画墨色 */
+body.light .sc-line { stroke: #7a7363; }
+body.light .sc-ink { fill: #6a6253; }
+body.light .sc-code rect { fill: #6a6253; }
+body.light .sc-paper { fill: #f6f2e8; }
 
 /* ---------- 卡片文字 ---------- */
 .post-meta {
@@ -948,35 +1004,92 @@ body.pointer-active .cursor-glow {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 60% 40%, var(--art-grad-3) 0%, transparent 60%),
-    linear-gradient(160deg, var(--art-grad-2), var(--paper));
   border-radius: 2px;
   overflow: hidden;
+}
+
+/* 一封还没写完的信 */
+.letter-sheet {
+  position: absolute;
+  border-radius: 3px;
+  background: var(--card);
   border: 1px solid var(--line);
 }
 
-.about-art-circle {
-  width: 180px;
-  height: 180px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  opacity: 0.2;
-  animation: circleBreathe 7s ease-in-out infinite;
+.letter-sheet-back {
+  width: 250px;
+  height: 300px;
+  transform: rotate(-7deg) translate(14px, -8px);
+  background: var(--paper);
+  box-shadow: 0 18px 40px -24px var(--shadow);
 }
 
-@keyframes circleBreathe {
-  0%, 100% { transform: scale(1); opacity: 0.15; }
-  50% { transform: scale(1.15); opacity: 0.3; }
+.letter-sheet-front {
+  width: 260px;
+  height: 300px;
+  transform: rotate(2deg);
+  box-shadow: 0 26px 54px -26px var(--shadow);
+  padding: 26px 26px 22px;
+  display: flex;
+  flex-direction: column;
 }
 
-.about-art-dots {
+.letter-stamp {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(var(--accent) 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.06;
+  top: 18px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 26px "DM Serif Display", serif;
+  color: var(--accent);
+  transform: rotate(-12deg);
+  opacity: .85;
+}
+
+.letter-lines {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.letter-lines i {
+  height: 1px;
+  background: var(--rule);
+  display: block;
+}
+
+.letter-lines i:nth-child(2) { width: 86%; }
+.letter-lines i:nth-child(3) { width: 94%; }
+.letter-lines i:nth-child(4) { width: 72%; }
+.letter-lines i:nth-child(5) { width: 90%; }
+
+.letter-postmark {
+  position: absolute;
+  left: 22px;
+  bottom: 64px;
+  font: 700 8px/1.5 "Inter", sans-serif;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 5px 7px;
+  transform: rotate(-9deg);
+  opacity: .7;
+  text-align: center;
+}
+
+.letter-sign {
+  margin-top: auto;
+  align-self: flex-end;
+  font: 500 22px "Noto Serif SC", serif;
+  color: var(--accent);
+  font-style: italic;
 }
 
 .about p:not(.eyebrow) {
@@ -1200,8 +1313,8 @@ body.pointer-active .cursor-glow {
     height: 150px;
   }
 
-  .cover-art-glyph {
-    font-size: 58px;
+  .scene {
+    width: 84%;
   }
 
   .post-card h3 {
@@ -1231,7 +1344,7 @@ body.pointer-active .cursor-glow {
   }
 
   .about-art {
-    height: 220px;
+    height: 320px;
   }
 
   .footer {
@@ -1263,8 +1376,8 @@ body.pointer-active .cursor-glow {
     height: 160px;
   }
 
-  .hero-art-core {
-    font-size: 60px;
+  .ink-path {
+    width: 220px;
   }
 
   .hero-art-label {
@@ -1299,8 +1412,8 @@ body.pointer-active .cursor-glow {
     height: 200px;
   }
 
-  .cover-art-glyph {
-    font-size: 80px;
+  .scene {
+    width: 78%;
   }
 
   .site-header nav {

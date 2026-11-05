@@ -35,10 +35,11 @@
 </head>
 <body id="top">
 
-<!-- 纸张颗粒 / 光晕 / 阅读进度 -->
+<!-- 纸张颗粒 / 光晕 / 阅读进度 / 生长的墨线 -->
 <div class="grain" aria-hidden="true"></div>
 <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<div class="ink-thread" id="inkThread" aria-hidden="true"></div>
 
 <header class="site-header wrap">
   <a class="brand" href="#top">
@@ -80,12 +81,24 @@
     </a>
   </div>
 
+  <!-- 一张摊开的笔记本纸，笔尖正在一遍遍写出 ∞ -->
   <div class="hero-art" aria-hidden="true">
-    <div class="hero-art-ring"></div>
-    <div class="hero-art-ring"></div>
-    <div class="hero-art-ring"></div>
-    <div class="hero-art-core">∞</div>
-    <div class="hero-art-label">第 1 页<br>后面还有很多页</div>
+    <div class="notebook-lines"></div>
+    <div class="hero-art-ring ring-1"></div>
+    <div class="hero-art-ring ring-2"></div>
+    <div class="hero-art-ring ring-3"></div>
+
+    <svg class="ink-path" viewBox="0 0 280 120">
+      <path id="inkStroke" class="ink-trail" pathLength="1000"
+            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
+      <circle class="ink-tip" r="4.5">
+        <animateMotion dur="6s" repeatCount="indefinite">
+          <mpath href="#inkStroke" />
+        </animateMotion>
+      </circle>
+    </svg>
+
+    <div class="hero-art-label">还在写<br>第 1 页 · 后面还有很多页</div>
     <div class="hero-art-orbit"></div>
   </div>
 </section>
@@ -121,9 +134,17 @@
     </section>
 
     <section id="about" class="wrap about">
+      <!-- 一封还没写完的信 -->
       <div class="about-art" aria-hidden="true" data-reveal>
-        <div class="about-art-circle"></div>
-        <div class="about-art-dots"></div>
+        <div class="letter-sheet letter-sheet-back"></div>
+        <div class="letter-sheet letter-sheet-front">
+          <div class="letter-stamp">∞</div>
+          <div class="letter-lines">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="letter-postmark">NEVER<br>ENDING<br>2026</div>
+          <div class="letter-sign">铜香哭哭死</div>
+        </div>
       </div>
       <div data-reveal>
         <p class="eyebrow">关于这里，和我</p>

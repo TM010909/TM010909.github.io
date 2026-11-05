@@ -11,9 +11,75 @@ var finePointer = !!(window.matchMedia && window.matchMedia("(hover: hover) and 
 var filters = ["全部", "生活", "旅行", "技术", "随笔"];
 var active = "全部";
 
-// --- 分类 → 封面配色 / 字形 ---
 var CATEGORY_SLUG = { "生活": "life", "旅行": "travel", "技术": "tech", "随笔": "note" };
-var CATEGORY_GLYPH = { "生活": "生", "旅行": "旅", "技术": "技", "随笔": "随" };
+
+// ============================================
+// 四幅微型场景插画（纯 SVG，颜色全部交给 CSS 变量控制）
+// 生活：窗台盆栽 / 旅行：山海与路 / 技术：终端光标 / 随笔：信纸与笔
+// ============================================
+var SCENES = {
+  life: `
+    <svg class="scene scene-life" viewBox="0 0 200 130">
+      <rect class="sc-line" x="38" y="12" width="124" height="92" rx="2"/>
+      <path class="sc-line" opacity=".5" d="M100 12 V104 M38 58 H162"/>
+      <path class="sc-light" d="M38 12 H92 L46 104 H38 Z"/>
+      <path class="sc-line" d="M24 110 H176"/>
+      <path class="sc-fill" d="M84 100 L88 110 H112 L116 100 Z"/>
+      <path class="sc-line" stroke-width="2" d="M100 100 C100 82 95 72 88 64 M100 100 C100 84 106 74 114 68 M100 100 V68"/>
+      <g class="sc-leaves">
+        <ellipse class="sc-fill" cx="87" cy="61" rx="9" ry="5" transform="rotate(-35 87 61)"/>
+        <ellipse class="sc-fill" cx="115" cy="65" rx="9" ry="5" transform="rotate(32 115 65)"/>
+        <ellipse class="sc-fill" cx="100" cy="66" rx="6" ry="10"/>
+      </g>
+    </svg>`,
+
+  travel: `
+    <svg class="scene scene-travel" viewBox="0 0 200 130">
+      <circle class="sc-moon" cx="152" cy="34" r="13"/>
+      <path class="sc-fill-soft" d="M0 96 L46 52 L80 82 L118 44 L200 96 V130 H0 Z"/>
+      <path class="sc-fill" d="M0 108 L34 78 L68 100 L102 70 L148 104 L200 82 V130 H0 Z"/>
+      <path class="sc-road" d="M96 130 C106 112 84 104 96 92 C108 80 92 76 100 66"/>
+      <path class="sc-line" opacity=".3" d="M0 112 H200"/>
+    </svg>`,
+
+  tech: `
+    <svg class="scene scene-tech" viewBox="0 0 200 130">
+      <rect class="sc-paper" x="26" y="16" width="148" height="98" rx="5"/>
+      <path class="sc-line" d="M26 36 H174"/>
+      <circle class="sc-dot" cx="40" cy="26" r="3"/>
+      <circle class="sc-dot" cx="50" cy="26" r="3" opacity=".6"/>
+      <circle class="sc-dot" cx="60" cy="26" r="3" opacity=".35"/>
+      <g class="sc-code">
+        <rect x="40" y="48" width="18" height="3" rx="1.5"/>
+        <rect x="64" y="48" width="48" height="3" rx="1.5"/>
+        <rect x="52" y="60" width="30" height="3" rx="1.5"/>
+        <rect x="88" y="60" width="26" height="3" rx="1.5"/>
+        <rect x="52" y="72" width="60" height="3" rx="1.5"/>
+        <rect x="40" y="84" width="22" height="3" rx="1.5"/>
+      </g>
+      <rect class="sc-cursor" x="66" y="82" width="7" height="7" rx="1"/>
+    </svg>`,
+
+  note: `
+    <svg class="scene scene-note" viewBox="0 0 200 130">
+      <g class="sc-note-paper">
+        <rect class="sc-paper" x="48" y="14" width="100" height="102" rx="2"/>
+        <g class="sc-line">
+          <path d="M60 38 H136"/>
+          <path d="M60 50 H136"/>
+          <path d="M60 62 H116"/>
+          <path d="M60 74 H130"/>
+          <path d="M60 86 H102"/>
+        </g>
+      </g>
+      <g class="sc-note-pen">
+        <rect class="sc-strong" x="146" y="44" width="7" height="60" rx="2"/>
+        <path class="sc-strong" d="M146 104 L149.5 118 L153 104 Z"/>
+      </g>
+      <circle class="sc-ink" cx="58" cy="106" r="3"/>
+      <circle class="sc-ink" cx="66" cy="112" r="1.6" opacity=".6"/>
+    </svg>`
+};
 
 // --- DOM 引用 ---
 var grid = document.querySelector("#postGrid");
@@ -23,6 +89,7 @@ var empty = document.querySelector("#emptyState");
 var dlg = document.querySelector("#articleDialog");
 var postCount = document.querySelector("#postCount");
 var progress = document.querySelector("#scrollProgress");
+var inkThread = document.querySelector("#inkThread");
 var toTop = document.querySelector("#toTop");
 var glow = document.querySelector("#cursorGlow");
 var themeBtn = document.querySelector("#themeToggle");
@@ -47,17 +114,17 @@ function formatBody(text) {
   }).join("");
 }
 
-// --- 生成抽象封面（image 为空时使用）---
+// --- 生成场景封面（image 为空时使用）---
 function coverArt(p) {
   var slug = CATEGORY_SLUG[p.category] || "note";
-  var glyph = CATEGORY_GLYPH[p.category] || "·";
   return '<div class="cover-art cover-art-' + slug + '" aria-hidden="true">' +
-           '<span class="cover-art-glyph">' + glyph + '</span>' +
+           '<span class="cover-art-label">' + esc(p.category) + '</span>' +
+           (SCENES[slug] || SCENES.note) +
            '<span class="cover-art-mark">∞</span>' +
          '</div>';
 }
 
-// --- 封面：有自定义图片就用图片，否则用分类抽象封面 ---
+// --- 封面：有自定义图片就用图片，否则用分类场景插画 ---
 function coverHTML(p, place) {
   if (p.image) {
     return '<img ' + (place === "card" ? 'loading="lazy" ' : '') +
@@ -74,7 +141,7 @@ function updateCount(n) {
 
 // ============================================
 // 滚动入场动画
-// 用 IntersectionObserver；不支持时内容默认可见，绝不隐藏
+// 元素默认始终可见；observer 触发时播放一次淡入，绝不因脚本异常留白
 // ============================================
 var revealObserver = null;
 
@@ -98,7 +165,6 @@ function observeReveals(root) {
   });
 }
 
-// 兜底：若 observer 因环境原因未回调，仍让首屏内的区块播放入场动画
 if (revealObserver) {
   setTimeout(function () {
     document.querySelectorAll("[data-reveal]:not(.revealed)").forEach(function (el) {
@@ -182,8 +248,6 @@ function closeDialog() {
 // ============================================
 // 事件绑定
 // ============================================
-
-// 筛选
 document.querySelector("#filters").addEventListener("click", function (e) {
   var b = e.target.closest("button[data-filter]");
   if (b) setActiveFilter(b.dataset.filter);
@@ -195,7 +259,6 @@ document.querySelectorAll("[data-category-link]").forEach(function (a) {
   });
 });
 
-// 搜索 + 清除
 function syncClear() {
   searchClear.hidden = search.value.length === 0;
 }
@@ -213,7 +276,6 @@ searchClear.addEventListener("click", function (e) {
   search.focus();
 });
 
-// 文章卡片
 grid.addEventListener("click", function (e) {
   var c = e.target.closest("[data-id]");
   if (c) openPost(c.dataset.id);
@@ -226,7 +288,6 @@ grid.addEventListener("keydown", function (e) {
   }
 });
 
-// 弹窗关闭
 document.querySelector("#closeDialog").addEventListener("click", closeDialog);
 
 dlg.addEventListener("click", function (e) {
@@ -238,7 +299,7 @@ document.addEventListener("keydown", function (e) {
 });
 
 // ============================================
-// 滚动：进度条 / 回到顶部 / 导航高亮
+// 滚动：进度条 / 墨线 / 回到顶部 / 导航高亮
 // ============================================
 var sectionIds = ["latest", "categories", "about"];
 var navLinks = Array.prototype.slice.call(document.querySelectorAll(".site-header nav a"));
@@ -250,14 +311,11 @@ function onScrollFrame() {
   var doc = document.documentElement;
   var y = window.scrollY || doc.scrollTop || 0;
   var max = doc.scrollHeight - window.innerHeight;
+  var ratio = max > 0 ? Math.min(1, y / max) : 0;
 
-  if (progress) {
-    progress.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0) + ")";
-  }
-
-  if (toTop) {
-    toTop.classList.toggle("visible", y > 500);
-  }
+  if (progress) progress.style.transform = "scaleX(" + ratio + ")";
+  if (inkThread) inkThread.style.height = (ratio * 100) + "vh";
+  if (toTop) toTop.classList.toggle("visible", y > 500);
 
   var current = "";
   sectionIds.forEach(function (id) {
@@ -333,7 +391,6 @@ function saveTheme(isLight) {
 themeBtn.addEventListener("click", function () {
   var isLight = !document.body.classList.contains("light");
 
-  // 以按钮为圆心计算扩散半径，供 View Transitions 使用
   var rect = themeBtn.getBoundingClientRect();
   var x = rect.left + rect.width / 2;
   var y = rect.top + rect.height / 2;

@@ -85,21 +85,22 @@
     <a class="text-link" href="#latest">
       从最近写的开始 <span>↗</span>
     </a>
-
-    <span class="hero-rail" aria-hidden="true"><b>第 一 期</b><i>未完待续</i></span>
   </div>
 
-  <!-- 一张摊开的笔记本纸，笔尖正在一遍遍写出 ∞ -->
+  <!-- 一片正在晕开的 ∞ 墨迹，笔尖还在写 -->
   <div class="hero-art" aria-hidden="true">
+    <div class="hero-glow"></div>
     <div class="notebook-lines"></div>
     <div class="hero-art-ring ring-1"></div>
     <div class="hero-art-ring ring-2"></div>
     <div class="hero-art-ring ring-3"></div>
 
     <svg class="ink-path" viewBox="0 0 280 120">
+      <path class="ink-trail-soft"
+            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
       <path id="inkStroke" class="ink-trail" pathLength="1000"
             d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
-      <circle class="ink-tip" r="4.5">
+      <circle class="ink-tip" r="5">
         <animateMotion dur="6s" repeatCount="indefinite">
           <mpath href="#inkStroke" />
         </animateMotion>

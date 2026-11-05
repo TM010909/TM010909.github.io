@@ -1,6 +1,7 @@
 /* ============================================
    永不完结 · Style Sheet
-   设计理念：文学气息的数字空间，安静、克制、有温度
+   设计理念：一个没有终点的个人记录，安静、克制、有温度
+   图片：全部由 CSS 绘制，无外部图片依赖
    ============================================ */
 
 * {
@@ -18,10 +19,7 @@
   --muted: #969a9b;
   --line: #343a3c;
   --accent: #b99b70;
-  --accent-soft: rgba(185, 155, 112, 0.15);
   --card: #202527;
-  --card-hover: #282e30;
-  --overlay: rgba(12, 16, 18, 0.7);
   --shadow: rgba(0, 0, 0, 0.5);
   --selection: rgba(185, 155, 112, 0.3);
   --art-grad-1: #2a3a3e;
@@ -37,10 +35,7 @@ body.light {
   --muted: #8a857c;
   --line: #ddd8cc;
   --accent: #8a6a4a;
-  --accent-soft: rgba(138, 106, 74, 0.12);
   --card: #ebe7dd;
-  --card-hover: #e0dccf;
-  --overlay: rgba(255, 255, 255, 0.7);
   --shadow: rgba(0, 0, 0, 0.12);
   --selection: rgba(138, 106, 74, 0.2);
   --art-grad-1: #d4c5a9;
@@ -106,7 +101,7 @@ body {
 
 .brand small {
   display: block;
-  font: 10px Inter, sans-serif;
+  font: 10px "Noto Serif SC", serif;
   letter-spacing: 2px;
   color: var(--muted);
   margin-top: 4px;
@@ -120,6 +115,7 @@ body {
 .site-header nav a,
 .footer a {
   font-size: 13px;
+  font-family: "Noto Serif SC", serif;
   color: var(--muted);
   text-decoration: none;
   transition: color .25s;
@@ -180,11 +176,10 @@ body {
 }
 
 .eyebrow {
-  font: 10px Inter, sans-serif;
-  letter-spacing: 2.4px;
+  font: 11px "Noto Serif SC", serif;
+  letter-spacing: 3px;
   color: var(--accent);
   font-weight: 600;
-  text-transform: uppercase;
 }
 
 .hero h1 {
@@ -212,7 +207,7 @@ body {
   margin-top: 26px;
   padding-bottom: 7px;
   border-bottom: 1px solid var(--accent);
-  font-size: 13px;
+  font: 13px "Noto Serif SC", serif;
   letter-spacing: 1px;
   text-decoration: none;
   color: var(--ink);
@@ -234,7 +229,7 @@ body {
   margin-left: 22px;
 }
 
-/* ---------- 首页艺术图形（替代外部图片） ---------- */
+/* ---------- 首页艺术图形 ---------- */
 .hero-art {
   height: 400px;
   position: relative;
@@ -299,26 +294,11 @@ body {
   position: absolute;
   bottom: 24px;
   right: 24px;
-  font: 8px Inter, sans-serif;
+  font: 9px/1.9 "Noto Serif SC", serif;
   letter-spacing: 2px;
   color: var(--muted);
   text-align: right;
-  line-height: 1.8;
   z-index: 2;
-}
-
-.hero-note {
-  position: absolute;
-  right: 0;
-  bottom: 24px;
-  font: 9px Inter, sans-serif;
-  letter-spacing: 2px;
-  color: var(--muted);
-}
-
-.hero-note span {
-  color: var(--accent);
-  padding: 0 8px;
 }
 
 /* ---------- 首页信息条 ---------- */
@@ -340,8 +320,8 @@ body {
 
 .intro-strip .strip-right {
   margin-left: auto;
-  font: 9px Inter, sans-serif;
-  letter-spacing: 1.8px;
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: 2px;
 }
 
 /* ---------- 文章区域 ---------- */
@@ -364,7 +344,7 @@ body {
 }
 
 .muted {
-  font: 9px Inter, sans-serif;
+  font: 11px "Noto Serif SC", serif;
   letter-spacing: 2px;
   color: var(--muted);
 }
@@ -463,10 +443,11 @@ body {
   background: linear-gradient(180deg, transparent 60%, var(--card));
   opacity: 0;
   transition: opacity .4s;
+  pointer-events: none;
 }
 
 .post-card:hover .cover::after {
-  opacity: 0.5;
+  opacity: 0.35;
 }
 
 .post-card img {
@@ -482,12 +463,130 @@ body {
   filter: saturate(1) brightness(1);
 }
 
+/* ---------- 分类抽象封面（CSS 绘制） ---------- */
+.cover-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-art::before,
+.cover-art::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cover-art-glyph {
+  position: relative;
+  z-index: 2;
+  font: 700 clamp(68px, 8vw, 100px)/1 "Noto Serif SC", serif;
+  color: var(--ink);
+  opacity: .13;
+  user-select: none;
+  transition: transform .6s ease, opacity .6s ease;
+}
+
+.post-card:hover .cover-art-glyph {
+  transform: scale(1.08);
+  opacity: .2;
+}
+
+.cover-art-mark {
+  position: absolute;
+  right: 16px;
+  bottom: 10px;
+  z-index: 2;
+  font: 18px "DM Serif Display", serif;
+  color: var(--accent);
+  opacity: .6;
+}
+
+/* 生活：暖陶土 + 同心圆 */
+.cover-art-life {
+  background: radial-gradient(circle at 28% 24%, rgba(206, 158, 98, .32), transparent 58%), var(--card);
+}
+
+.cover-art-life::before {
+  width: 150px; height: 150px;
+  border: 1px solid var(--accent);
+  opacity: .26;
+}
+
+.cover-art-life::after {
+  width: 240px; height: 240px;
+  border: 1px solid var(--accent);
+  opacity: .12;
+}
+
+/* 旅行：青蓝 + 斜向地平线 */
+.cover-art-travel {
+  background:
+    linear-gradient(160deg, rgba(96, 152, 160, .32), transparent 55%),
+    radial-gradient(circle at 76% 80%, rgba(70, 120, 130, .3), transparent 60%),
+    var(--card);
+}
+
+.cover-art-travel::before,
+.cover-art-travel::after {
+  width: 140%; height: 1px;
+  border-radius: 0;
+  background: var(--accent);
+  transform: rotate(-12deg);
+}
+
+.cover-art-travel::before { opacity: .38; }
+.cover-art-travel::after { opacity: .18; transform: rotate(-12deg) translateY(42px); }
+
+/* 技术：灰蓝 + 网格 */
+.cover-art-tech {
+  background: radial-gradient(circle at 72% 26%, rgba(120, 136, 180, .3), transparent 60%), var(--card);
+}
+
+.cover-art-tech::before {
+  inset: 0;
+  width: 100%; height: 100%;
+  border-radius: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: .45;
+}
+
+.cover-art-tech::after { display: none; }
+
+/* 随笔：褐紫 + 错位圆弧 */
+.cover-art-note {
+  background: radial-gradient(circle at 34% 72%, rgba(168, 126, 146, .3), transparent 62%), var(--card);
+}
+
+.cover-art-note::before {
+  width: 240px; height: 240px;
+  border: 1px solid var(--accent);
+  opacity: .2;
+  transform: translate(38%, -26%);
+}
+
+.cover-art-note::after {
+  width: 120px; height: 120px;
+  border: 1px dashed var(--accent);
+  opacity: .24;
+  transform: translate(-34%, 30%);
+}
+
+/* ---------- 卡片文字 ---------- */
 .post-meta {
   display: flex;
   gap: 12px;
   margin: 18px 0 10px;
-  font: 9px Inter, sans-serif;
-  letter-spacing: 1px;
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: .5px;
   color: var(--muted);
 }
 
@@ -517,7 +616,7 @@ body {
 .read-more {
   display: inline-block;
   margin-top: 14px;
-  font: 10px Inter, sans-serif;
+  font: 11px "Noto Serif SC", serif;
   color: var(--accent);
   letter-spacing: 1px;
   opacity: 0;
@@ -609,7 +708,6 @@ body {
   padding-bottom: 100px;
 }
 
-/* 关于区域艺术图形 */
 .about-art {
   height: 320px;
   position: relative;
@@ -662,8 +760,8 @@ body {
 }
 
 .footer > span {
-  font: 10px Inter, sans-serif;
-  letter-spacing: 1.3px;
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: 1.5px;
   color: var(--muted);
 }
 
@@ -719,34 +817,38 @@ body {
   margin-bottom: 8px;
 }
 
-.article-dialog img {
-  width: 100%;
-  max-height: 360px;
-  object-fit: cover;
+/* 弹窗内封面：图片或抽象封面都放在同一容器里 */
+.dialog-cover {
+  height: 220px;
   margin: 24px 0;
+  overflow: hidden;
   border-radius: 2px;
+  background: var(--card);
 }
 
-/* 正文：使用 ink-soft 而非 muted，提高可读性 */
+.dialog-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .article-dialog .article-body {
   font: 15px/2.3 "Noto Serif SC", serif;
   color: var(--ink-soft);
-  white-space: pre-line;
 }
 
-/* 正文段落间距 */
 .article-dialog .article-body p {
   margin-bottom: 1.4em;
 }
 
-/* 文章末尾结束标记 */
 .article-end-mark {
   display: block;
   text-align: center;
   margin-top: 40px;
   padding-top: 32px;
   border-top: 1px solid var(--line);
-  font: 10px Inter, sans-serif;
+  font: 10px "Noto Serif SC", serif;
   letter-spacing: 3px;
   color: var(--muted);
 }
@@ -813,10 +915,6 @@ body {
     font-size: clamp(28px, 8vw, 40px);
   }
 
-  .hero-note {
-    bottom: 20px;
-  }
-
   .intro-strip {
     gap: 14px;
     flex-wrap: wrap;
@@ -848,6 +946,10 @@ body {
 
   .post-card .cover {
     height: 150px;
+  }
+
+  .cover-art-glyph {
+    font-size: 58px;
   }
 
   .post-card h3 {
@@ -905,12 +1007,16 @@ body {
     line-height: 2.1;
   }
 
+  .dialog-cover {
+    height: 160px;
+  }
+
   .hero-art-core {
     font-size: 60px;
   }
 
   .hero-art-label {
-    font-size: 7px;
+    font-size: 8px;
     bottom: 16px;
     right: 16px;
   }
@@ -923,6 +1029,10 @@ body {
 
   .post-card .cover {
     height: 200px;
+  }
+
+  .cover-art-glyph {
+    font-size: 80px;
   }
 
   .site-header nav {

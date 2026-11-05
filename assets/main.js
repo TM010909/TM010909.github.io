@@ -6,6 +6,10 @@
 var filters = ["全部", "生活", "旅行", "技术", "随笔"];
 var active = "全部";
 
+// --- 分类 → 封面配色 / 字形 ---
+var CATEGORY_SLUG = { "生活": "life", "旅行": "travel", "技术": "tech", "随笔": "note" };
+var CATEGORY_GLYPH = { "生活": "生", "旅行": "旅", "技术": "技", "随笔": "随" };
+
 // --- DOM 引用 ---
 var grid = document.querySelector("#postGrid");
 var search = document.querySelector("#searchInput");
@@ -33,14 +37,29 @@ function formatBody(text) {
   }).join("");
 }
 
+// --- 生成抽象封面（image 为空时使用）---
+function coverArt(p) {
+  var slug = CATEGORY_SLUG[p.category] || "note";
+  var glyph = CATEGORY_GLYPH[p.category] || "·";
+  return '<div class="cover-art cover-art-' + slug + '" aria-hidden="true">' +
+           '<span class="cover-art-glyph">' + glyph + '</span>' +
+           '<span class="cover-art-mark">∞</span>' +
+         '</div>';
+}
+
+// --- 封面：有自定义图片就用图片，否则用分类抽象封面 ---
+function coverHTML(p, place) {
+  if (p.image) {
+    return '<img ' + (place === "card" ? 'loading="lazy" ' : '') +
+           'src="' + esc(p.image) + '" alt="' + esc(p.title) + '">';
+  }
+  return coverArt(p);
+}
+
 // --- 更新文章计数 ---
 function updateCount(n) {
   if (!postCount) return;
-  if (active === "全部") {
-    postCount.textContent = n + " STORIES";
-  } else {
-    postCount.textContent = active.toUpperCase() + " · " + n + " STORIES";
-  }
+  postCount.textContent = active === "全部" ? "共 " + n + " 篇" : active + " · " + n + " 篇";
 }
 
 // --- 渲染文章列表 ---
@@ -55,7 +74,7 @@ function render() {
   grid.innerHTML = list.map(function (p) {
     return (
       '<article class="post-card" data-id="' + p.id + '" tabindex="0">' +
-        '<div class="cover"><img loading="lazy" src="' + esc(p.image) + '" alt="' + esc(p.title) + '"></div>' +
+        '<div class="cover">' + coverHTML(p, "card") + '</div>' +
         '<div class="post-meta">' +
           '<span class="tag">' + esc(p.category) + '</span>' +
           '<span>' + esc(p.date) + '</span>' +
@@ -63,7 +82,7 @@ function render() {
         '</div>' +
         '<h3>' + esc(p.title) + '</h3>' +
         '<p>' + esc(p.excerpt) + '</p>' +
-        '<span class="read-more">READ STORY ↗</span>' +
+        '<span class="read-more">接着读 ↗</span>' +
       '</article>'
     );
   }).join("");
@@ -96,9 +115,9 @@ function openPost(id) {
   document.querySelector("#articleContent").innerHTML =
     '<p class="eyebrow">' + esc(p.category) + " · " + esc(p.date) + " · " + esc(p.read) + '</p>' +
     '<h1>' + esc(p.title) + '</h1>' +
-    '<img src="' + esc(p.image) + '" alt="' + esc(p.title) + '">' +
+    '<div class="dialog-cover">' + coverHTML(p, "dialog") + '</div>' +
     '<div class="article-body">' + formatBody(p.body) + '</div>' +
-    '<span class="article-end-mark">END · 永不完结</span>';
+    '<span class="article-end-mark">未完 · 永不完结</span>';
 
   dlg.showModal();
   // 锁定页面滚动

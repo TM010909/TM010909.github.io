@@ -14,65 +14,79 @@
 /* 默认深色主题 */
 :root {
   color-scheme: dark;
-  --paper: #13171a;
-  --ink: #edeae1;
-  --ink-soft: #cbc9c1;
-  --muted: #8c9092;
-  --line: #2f3538;
-  --control-line: #474d50;
-  --accent: #c8a26b;
-  --accent-2: #7fa39b;
-  --card: #1b2023;
-  --shadow: rgba(0, 0, 0, 0.55);
-  --selection: rgba(200, 162, 107, 0.3);
-  --art-grad-1: #243538;
-  --art-grad-2: #161e22;
-  --art-grad-3: #352a26;
-  --rule: rgba(130, 160, 168, 0.14);
-  --accent-soft: rgba(200, 162, 107, 0.22);
+  /* 密教抄本：午夜墨黑 · 古金 · 紫水晶 */
+  --paper: #0d1014;
+  --ink: #e9e1cf;
+  --ink-soft: #cbc2ad;
+  --muted: #8c8a80;
+  --line: #33302a;
+  --control-line: #57503f;
+  --accent: #caa75e;
+  --accent-2: #8b76b5;
+  --card: #14181c;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --selection: rgba(202, 167, 94, 0.3);
+  --art-grad-1: #1c2730;
+  --art-grad-2: #10161c;
+  --art-grad-3: #2a2026;
+  --rule: rgba(202, 167, 94, 0.10);
+  --accent-soft: rgba(202, 167, 94, 0.22);
 
-  /* 与主题联动的派生色，避免浅色主题下白字/亮金隐形 */
-  --title-grad-from: #ffffff;
-  --title-grad-to: #d6cfc0;
-  --ink-flow: #f2dcb0;
-  --glow-rgb: 200, 162, 107;
-  --sheen: rgba(255, 255, 255, .13);
-  --watermark-opacity: .035;
-  --hairline: rgba(200, 162, 107, .16);
-  --hero-wash: radial-gradient(ellipse at 76% 42%, rgba(200, 162, 107, .055), transparent 62%);
+  /* 与主题联动的派生色 */
+  --title-grad-from: #f4ead2;
+  --title-grad-to: #bfa469;
+  --ink-flow: #f6e2ae;
+  --glow-rgb: 202, 167, 94;
+  --sheen: rgba(246, 226, 174, .13);
+  --watermark-opacity: .032;
+  --hairline: rgba(202, 167, 94, .18);
+  --hero-wash:
+    radial-gradient(ellipse at 72% 44%, rgba(202, 167, 94, .07), transparent 60%),
+    radial-gradient(ellipse at 22% 88%, rgba(139, 118, 181, .06), transparent 58%);
+
+  /* 符印系统 */
+  --sigil: rgba(202, 167, 94, .46);
+  --sigil-soft: rgba(202, 167, 94, .14);
+  --seal: #8f4238;
+  --vignette: rgba(0, 0, 0, .58);
+  --rays: rgba(202, 167, 94, .035);
 }
 
-/* 浅色主题 */
+/* 浅色主题：旧羊皮纸 · 褪色墨 · 暗金压印 */
 :root.light {
   color-scheme: light;
-  --paper: #f2ece1;
-  --ink: #241f19;
-  --ink-soft: #4c4840;
-  --muted: #7a7265;
-  --line: #ddd5c6;
-  --control-line: #c6bdac;
-  --accent: #9a6f43;
-  --accent-2: #5e8478;
-  --card: #eae4d8;
-  --shadow: rgba(0, 0, 0, 0.14);
-  --selection: rgba(154, 111, 67, 0.22);
+  --paper: #e8dcc3;
+  --ink: #2a2116;
+  --ink-soft: #4c4232;
+  --muted: #7a6f5c;
+  --line: #cbbd9e;
+  --control-line: #b3a382;
+  --accent: #8a6526;
+  --accent-2: #5e4a86;
+  --card: #dcd0b4;
+  --shadow: rgba(60, 45, 20, 0.18);
+  --selection: rgba(138, 101, 38, 0.22);
   --art-grad-1: #d6c7ab;
   --art-grad-2: #cbd9d6;
   --art-grad-3: #e2cdb0;
-  --rule: rgba(80, 120, 140, 0.16);
-  --accent-soft: rgba(154, 111, 67, 0.26);
+  --rule: rgba(120, 95, 50, 0.16);
+  --accent-soft: rgba(138, 101, 38, 0.24);
 
-  /* 浅色主题：标题改为深墨→暖褐，保证在米纸上清晰 */
-  --title-grad-from: #2c2620;
-  --title-grad-to: #6d5540;
-  --ink-flow: #8a6234;
-  --glow-rgb: 154, 111, 67;
+  --title-grad-from: #2a2116;
+  --title-grad-to: #6b5227;
+  --ink-flow: #7a5620;
+  --glow-rgb: 138, 101, 38;
   --sheen: rgba(120, 90, 55, .10);
-  --watermark-opacity: .018;
-  --hairline: rgba(154, 111, 67, .22);
+  --watermark-opacity: .022;
+  --hairline: rgba(138, 101, 38, .24);
   --hero-wash:
-    radial-gradient(ellipse at 76% 40%, rgba(255, 255, 255, .72), transparent 62%),
-    radial-gradient(ellipse at 8% 92%, rgba(154, 111, 67, .045), transparent 58%);
+    radial-gradient(ellipse at 62% 45%, rgba(255, 252, 242, .38), transparent 76%);
+
+  --sigil: rgba(138, 101, 38, .52);
+  --sigil-soft: rgba(138, 101, 38, .12);
+  --seal: #8f4238;
+  --vignette: rgba(90, 70, 35, .13);
+  --rays: rgba(138, 101, 38, .028);
 }
 
 html {
@@ -916,11 +930,16 @@ body.banner-hidden .top-banner {
   transition: all .25s;
 }
 
-.filter.active,
 .filter:hover {
-  background: var(--accent);
   border-color: var(--accent);
-  color: var(--paper);
+  color: var(--accent);
+}
+
+.filter.active {
+  background: rgba(var(--glow-rgb), .14);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--sigil-soft);
 }
 
 .search {
@@ -1149,75 +1168,76 @@ body.banner-hidden .top-banner {
 
 @keyframes cursorBlink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
 
-/* 生活：暖陶土 · 窗台盆栽 */
+/* 四元素 · 生活：土 / 琥珀 */
 .cover-art-life {
   background:
     radial-gradient(circle at 26% 22%, var(--sc-accent-soft), transparent 62%),
     var(--card);
-  --sc-accent: #c98a5e;
-  --sc-accent-soft: rgba(201, 138, 94, .22);
-  --sc-ink: #c9c2b4;
-  --sc-paper: #2a2f31;
-  --sc-line-c: rgba(201, 138, 94, .35);
-  --sc-light: rgba(201, 138, 94, .16);
-  --sc-strong: #e0b78f;
-  --sc-moon: #e8dcc0;
-  --sc-road: #c98a5e;
+  --sc-accent: #c08a4e;
+  --sc-accent-soft: rgba(192, 138, 78, .22);
+  --sc-ink: #b9ae94;
+  --sc-paper: #1b1f24;
+  --sc-line-c: rgba(192, 138, 78, .35);
+  --sc-light: rgba(192, 138, 78, .16);
+  --sc-strong: #e2b881;
+  --sc-moon: #d9c79a;
+  --sc-road: #c08a4e;
 }
 
-/* 旅行：青蓝 · 山海与路 */
+/* 四元素 · 旅行：水 / 靛青 */
 .cover-art-travel {
   background:
     radial-gradient(circle at 74% 78%, var(--sc-accent-soft), transparent 60%),
     var(--card);
-  --sc-accent: #69a6a6;
-  --sc-accent-soft: rgba(105, 166, 166, .22);
-  --sc-ink: #c9c2b4;
-  --sc-paper: #2a2f31;
-  --sc-line-c: rgba(105, 166, 166, .35);
-  --sc-light: rgba(105, 166, 166, .15);
-  --sc-strong: #9fd0d0;
-  --sc-moon: #e8dcc0;
-  --sc-road: #8fc3c3;
+  --sc-accent: #5b86a8;
+  --sc-accent-soft: rgba(91, 134, 168, .22);
+  --sc-ink: #b9ae94;
+  --sc-paper: #1b1f24;
+  --sc-line-c: rgba(91, 134, 168, .35);
+  --sc-light: rgba(91, 134, 168, .15);
+  --sc-strong: #a3c4dd;
+  --sc-moon: #d9c79a;
+  --sc-road: #7fa8c4;
 }
 
-/* 技术：灰蓝 · 终端光标 */
+/* 四元素 · 技术：气 / 紫水晶 */
 .cover-art-tech {
   background:
     radial-gradient(circle at 70% 24%, var(--sc-accent-soft), transparent 60%),
     var(--card);
-  --sc-accent: #7fa3c9;
-  --sc-accent-soft: rgba(127, 163, 201, .2);
-  --sc-ink: #c9c2b4;
-  --sc-paper: #23292c;
-  --sc-line-c: rgba(127, 163, 201, .32);
-  --sc-light: rgba(127, 163, 201, .12);
-  --sc-strong: #bcd4ec;
-  --sc-moon: #e8dcc0;
-  --sc-road: #7fa3c9;
+  --sc-accent: #8b76b5;
+  --sc-accent-soft: rgba(139, 118, 181, .2);
+  --sc-ink: #b9ae94;
+  --sc-paper: #191d22;
+  --sc-line-c: rgba(139, 118, 181, .32);
+  --sc-light: rgba(139, 118, 181, .12);
+  --sc-strong: #c3b2e0;
+  --sc-moon: #d9c79a;
+  --sc-road: #8b76b5;
 }
 
-/* 随笔：褐紫 · 信纸与笔 */
+/* 四元素 · 随笔：火 / 朱砂 */
 .cover-art-note {
   background:
     radial-gradient(circle at 32% 70%, var(--sc-accent-soft), transparent 62%),
     var(--card);
-  --sc-accent: #b389a0;
-  --sc-accent-soft: rgba(179, 137, 160, .22);
-  --sc-ink: #c9c2b4;
-  --sc-paper: #2a2f31;
-  --sc-line-c: rgba(179, 137, 160, .35);
-  --sc-light: rgba(179, 137, 160, .14);
-  --sc-strong: #e0bcce;
-  --sc-moon: #e8dcc0;
-  --sc-road: #b389a0;
+  --sc-accent: #a8635a;
+  --sc-accent-soft: rgba(168, 99, 90, .22);
+  --sc-ink: #b9ae94;
+  --sc-paper: #1b1f24;
+  --sc-line-c: rgba(168, 99, 90, .35);
+  --sc-light: rgba(168, 99, 90, .14);
+  --sc-strong: #dfaaa2;
+  --sc-moon: #d9c79a;
+  --sc-road: #a8635a;
 }
 
-/* 浅色主题下的场景插画墨色 */
-:root.light .sc-line { stroke: #7a7363; }
-:root.light .sc-ink { fill: #6a6253; }
-:root.light .sc-code rect { fill: #6a6253; }
-:root.light .sc-paper { fill: #f6f2e8; }
+/* 浅色（羊皮纸）下：矿物颜料褪色感，避免封面过于鲜亮 */
+:root.light .sc-line { stroke: #6b5c42; }
+:root.light .sc-ink { fill: #5c4e38; }
+:root.light .sc-code rect { fill: #5c4e38; }
+:root.light .sc-paper { fill: #f0e6cd; }
+:root.light .scene { filter: saturate(.68) opacity(.9); }
 
 /* ---------- 卡片文字 ---------- */
 .post-meta {
@@ -2163,4 +2183,333 @@ input:focus-visible {
 
 @media print {
   .copy-link { display: none !important; }
+}
+
+/* ============================================
+   密教抄本：暗角 / 星尘 / 首屏符印
+   ============================================ */
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 9995;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 38%, var(--vignette) 100%);
+}
+
+.stardust {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .5;
+  background-image:
+    radial-gradient(1.5px 1.5px at 9% 17%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 23% 71%, var(--sigil), transparent 100%),
+    radial-gradient(1.5px 1.5px at 38% 12%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 52% 84%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 67% 26%, var(--sigil), transparent 100%),
+    radial-gradient(1.5px 1.5px at 81% 61%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 92% 33%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 14% 92%, var(--sigil), transparent 100%),
+    radial-gradient(1px 1px at 74% 8%, var(--sigil), transparent 100%);
+  animation: dustBreathe 14s ease-in-out infinite;
+}
+
+@keyframes dustBreathe {
+  0%, 100% { opacity: .3; }
+  50% { opacity: .68; }
+}
+
+/* 极淡放射光，随符印缓慢转动 */
+.sigil-rays {
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg,
+    var(--rays) 0deg .5deg,
+    transparent .5deg 15deg);
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 6%, transparent 62%);
+  mask: radial-gradient(circle at 50% 50%, #000 6%, transparent 62%);
+  animation: raysTurn 240s linear infinite;
+}
+
+@keyframes raysTurn { to { transform: rotate(360deg); } }
+
+/* 中心密封符印：双环 + 60 刻度 + 内层反向八角星 */
+.sigil-seal {
+  position: absolute;
+  z-index: 1;
+  width: 372px;
+  height: 372px;
+  border-radius: 50%;
+  border: 1px solid var(--sigil);
+  box-shadow:
+    inset 0 0 0 8px var(--sigil-soft),
+    0 0 0 1px var(--sigil-soft);
+  pointer-events: none;
+}
+
+.sigil-seal::before {
+  content: "";
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg,
+    var(--sigil) 0deg .45deg,
+    transparent .45deg 6deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 47%, #000 47% 50%, transparent 50%);
+  mask: radial-gradient(circle, transparent 0 47%, #000 47% 50%, transparent 50%);
+  animation: sealSpin 150s linear infinite;
+}
+
+.sigil-seal::after {
+  content: "";
+  position: absolute;
+  inset: 24%;
+  border: 1px solid var(--sigil-soft);
+  transform: rotate(45deg);
+  animation: sealSpinReverse 110s linear infinite;
+}
+
+@keyframes sealSpin { to { transform: rotate(360deg); } }
+@keyframes sealSpinReverse { to { transform: rotate(-315deg); } }
+
+/* 顶部弦月 */
+.sigil-moon {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 4;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  border: 1px solid var(--sigil);
+  box-shadow: 0 0 14px var(--accent-soft);
+  overflow: hidden;
+}
+
+.sigil-moon::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 6px;
+  width: 16px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+/* 四角菱形星芒 */
+.sigil-corners {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.sigil-corners i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--sigil);
+  transform: rotate(45deg);
+  animation: cornerGlimmer 9s ease-in-out infinite;
+}
+
+.sigil-corners i::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--sigil);
+}
+
+.sigil-corners i:nth-child(1) { top: 22px; left: 22px; }
+.sigil-corners i:nth-child(2) { top: 22px; right: 22px; animation-delay: 2s; }
+.sigil-corners i:nth-child(3) { bottom: 22px; left: 22px; animation-delay: 4s; }
+.sigil-corners i:nth-child(4) { bottom: 22px; right: 22px; animation-delay: 6s; }
+
+@keyframes cornerGlimmer {
+  0%, 100% { opacity: .4; }
+  50% { opacity: 1; }
+}
+
+/* ∞ 收进符印环内，形成「无限穿过封印」的层次 */
+.ink-path {
+  width: min(580px, 108%);
+  transform: translateX(-6%) translate(var(--ink-px, 0px), var(--ink-py, 0px));
+}
+
+@media (max-width: 700px) {
+  .sigil-seal { width: 250px; height: 250px; }
+  .sigil-corners i { width: 7px; height: 7px; }
+  .sigil-moon { top: 10px; }
+  .ink-path { width: 240px; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stardust, .sigil-rays, .sigil-seal::before, .sigil-seal::after,
+  .sigil-corners i { animation: none !important; }
+  .stardust { opacity: .4; }
+}
+
+@media print {
+  .vignette, .stardust, .sigil-rays, .sigil-seal, .sigil-moon,
+  .sigil-corners { display: none !important; }
+}
+
+/* ============================================
+   符印语言贯穿：印章 / 角饰 / 蜡封 / 星芒
+   ============================================ */
+
+/* 品牌 ∞ 封入双环印章 */
+.brand-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+
+.brand-mark::before,
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.brand-mark::before {
+  inset: 0;
+  border: 1px solid var(--sigil);
+}
+
+.brand-mark::after {
+  inset: 4px;
+  border: 1px solid var(--sigil-soft);
+}
+
+/* 章节眉题与分隔符的星芒 */
+.eyebrow::before {
+  content: "✦";
+  color: var(--accent);
+  opacity: .75;
+  margin-right: 9px;
+  font-size: .85em;
+}
+
+.article-dialog .eyebrow::before { display: none; }
+
+.divider span::before,
+.divider span::after {
+  content: "✦";
+  font: 9px "Noto Serif SC", serif;
+  color: var(--accent);
+  opacity: .7;
+  vertical-align: 2px;
+}
+
+.divider span::before { margin-right: 14px; }
+.divider span::after { margin-left: 14px; }
+
+.hero-masthead span:first-child::before,
+.hero-masthead-right::after {
+  content: "✦";
+  color: var(--accent);
+  opacity: .7;
+}
+
+.hero-masthead span:first-child::before { margin-right: 10px; }
+.hero-masthead-right::after { margin-left: 10px; }
+
+/* 卡片 hover：一圈符印细框浮现 */
+.post-card::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 1px solid var(--sigil);
+  opacity: 0;
+  transform: scale(.985);
+  transition: opacity .4s ease, transform .4s ease;
+  pointer-events: none;
+}
+
+.post-card:hover::before,
+.post-card:focus-visible::before {
+  opacity: .6;
+  transform: none;
+}
+
+/* 分类区页角 L 形饰线，像抄本页框 */
+.category-feature { position: relative; }
+
+.category-feature::before,
+.category-feature::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: solid var(--sigil);
+  pointer-events: none;
+}
+
+.category-feature::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+.category-feature::after { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; }
+
+/* 信纸上的朱砂蜡封 */
+.letter-stamp {
+  border: 2px double var(--accent);
+  color: var(--accent);
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, .09), transparent 60%),
+    var(--seal);
+  box-shadow: 0 6px 16px -10px var(--shadow), inset 0 0 0 3px rgba(0, 0, 0, .12);
+}
+
+/* 文章末尾的 ∞ 小封印 */
+.article-end-mark::before {
+  content: "∞";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: 0 auto 14px;
+  border: 1px solid var(--sigil);
+  border-radius: 50%;
+  color: var(--accent);
+  font: 18px "DM Serif Display", serif;
+  letter-spacing: 0;
+}
+
+/* 封面角标也封入细环 */
+.cover-art-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--sigil);
+  border-radius: 50%;
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .brand-mark { width: 38px; height: 38px; font-size: 26px; }
+  .post-card::before { inset: -5px; }
+}
+
+@media print {
+  .brand-mark::before, .brand-mark::after,
+  .post-card::before,
+  .category-feature::before, .category-feature::after,
+  .article-end-mark::before,
+  .eyebrow::before,
+  .divider span::before, .divider span::after,
+  .hero-masthead span:first-child::before,
+  .hero-masthead-right::after { display: none !important; }
 }

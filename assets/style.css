@@ -1991,3 +1991,131 @@ input:focus-visible {
   .footer { border-top: 1px solid #ccc; }
   a { color: inherit !important; text-decoration: none; }
 }
+
+/* ============================================
+   无障碍与阅读体验
+   ============================================ */
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10000;
+  padding: 10px 18px;
+  background: var(--accent);
+  color: var(--paper);
+  font: 13px "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 2px;
+  transform: translateY(-160%);
+  transition: transform .25s ease;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* 弹窗内阅读进度 */
+.article-read-progress {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  height: 2px;
+  /* 不用负 margin-top：否则整块内容上移，进度线会压到标题上 */
+  margin: 0 calc(-1 * min(8vw, 70px)) 18px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* 文章间导航：首尾循环，呼应 ∞ */
+.article-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.article-nav button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--control-line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color .3s, background .3s, transform .3s;
+}
+
+.article-nav button:last-child {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.article-nav button:hover {
+  border-color: var(--accent);
+  background: rgba(var(--glow-rgb), .05);
+  transform: translateY(-2px);
+}
+
+.article-nav small {
+  font: 10px "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.article-nav span {
+  font: 13px/1.6 "Noto Serif SC", serif;
+  color: var(--ink-soft);
+}
+
+/* 行内代码与引用块 */
+.article-dialog .article-body code {
+  font: .88em/1.4 "SFMono-Regular", Consolas, monospace;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--card);
+  color: var(--accent);
+}
+
+.article-dialog .article-body blockquote {
+  background: rgba(var(--glow-rgb), .045);
+  padding: 14px 18px;
+  border-radius: 2px;
+}
+
+/* 系统高对比偏好：加深边框与次要文字 */
+@media (prefers-contrast: more) {
+  :root { --line: #6b7175; --control-line: #8a9094; --muted: #c3c6c3; }
+  :root.light { --line: #8a8272; --control-line: #6f6858; --muted: #4a443a; }
+  .post-card .cover, .category-feature, .filter { border-width: 2px; }
+}
+
+@media print {
+  .skip-link, .article-nav, .article-read-progress { display: none !important; }
+}
+
+@media (max-width: 700px) {
+  .article-read-progress {
+    margin: 0 -24px 18px;
+  }
+
+  .article-nav {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .article-nav button:last-child {
+    text-align: left;
+    align-items: flex-start;
+  }
+}

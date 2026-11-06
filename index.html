@@ -10,18 +10,58 @@
   <meta name="keywords" content="永不完结,铜香哭哭死,个人博客,生活,旅行,技术,随笔">
   <meta name="robots" content="index, follow">
   <title>永不完结 — 铜香哭哭死</title>
+  <link rel="canonical" href="https://TM010909.github.io/">
+  <meta name="theme-color" content="#13171a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f2ece1" media="(prefers-color-scheme: light)">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://TM010909.github.io/">
   <meta property="og:title" content="永不完结 — 铜香哭哭死">
   <meta property="og:description" content="写生活、路上的事、代码和翻过的书，不追热点，也不打算写完。">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="永不完结">
+  <meta property="og:image" content="https://TM010909.github.io/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="永不完结 · 铜香哭哭死">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="永不完结 — 铜香哭哭死">
   <meta name="twitter:description" content="写生活、路上的事、代码和翻过的书，不追热点，也不打算写完。">
+  <meta name="twitter:image" content="https://TM010909.github.io/og-image.png">
+
+  <!-- 结构化数据 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://TM010909.github.io/#website",
+        "url": "https://TM010909.github.io/",
+        "name": "永不完结",
+        "inLanguage": "zh-CN",
+        "author": { "@id": "https://TM010909.github.io/#person" }
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://TM010909.github.io/#blog",
+        "name": "永不完结",
+        "description": "写生活、路上的事、代码和翻过的书，不追热点，也不打算写完。",
+        "inLanguage": "zh-CN",
+        "author": { "@id": "https://TM010909.github.io/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://TM010909.github.io/#person",
+        "name": "铜香哭哭死",
+        "url": "https://github.com/TM010909"
+      }
+    ]
+  }
+  </script>
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23c8a26b'>∞</text></svg>">
@@ -42,6 +82,8 @@
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body id="top">
+
+<a class="skip-link" href="#latest">跳到文章</a>
 
 <!-- 顶部题词横幅：缓慢流动的刊头题词 -->
 <div class="top-banner" id="topBanner" aria-hidden="true">
@@ -149,7 +191,7 @@
           <p class="eyebrow">WRITINGS</p>
           <h2>写下来的</h2>
         </div>
-        <span class="muted" id="postCount">共 4 篇</span>
+        <span class="muted" id="postCount" aria-live="polite">共 4 篇</span>
       </div>
       <div class="toolbar" data-reveal>
         <div id="filters" class="filters"></div>
@@ -217,7 +259,8 @@
 
   <button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
 
-  <dialog id="articleDialog" class="article-dialog">
+  <dialog id="articleDialog" class="article-dialog" aria-label="文章阅读">
+    <div class="article-read-progress" id="articleReadProgress" aria-hidden="true"></div>
     <button class="dialog-close" id="closeDialog" aria-label="关闭">×</button>
     <div id="articleContent"></div>
   </dialog>

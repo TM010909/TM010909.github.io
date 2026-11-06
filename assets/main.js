@@ -87,6 +87,9 @@ var search = document.querySelector("#searchInput");
 var searchClear = document.querySelector("#searchClear");
 var empty = document.querySelector("#emptyState");
 var dlg = document.querySelector("#articleDialog");
+var articleContent = document.querySelector("#articleContent");
+var articleProgress = document.querySelector("#articleReadProgress");
+var lastTrigger = null;
 var postCount = document.querySelector("#postCount");
 var progress = document.querySelector("#scrollProgress");
 var inkThread = document.querySelector("#inkThread");
@@ -110,10 +113,18 @@ function esc(s) {
   });
 }
 
-// --- 将正文按 \n\n 分段为 <p> ---
+// --- 将正文按 \n\n 分段；支持 > 引用 与 `行内代码`（向后兼容纯文本） ---
+function inlineMarkup(s) {
+  return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
 function formatBody(text) {
   return text.split(/\n\n+/).map(function (para) {
-    return "<p>" + esc(para.trim()) + "</p>";
+    var t = para.trim();
+    if (/^>\s?/.test(t)) {
+      return "<blockquote>" + inlineMarkup(t.replace(/^>\s?/, "")) + "</blockquote>";
+    }
+    return "<p>" + inlineMarkup(t) + "</p>";
   }).join("");
 }
 
@@ -191,7 +202,8 @@ function render() {
 
   grid.innerHTML = list.map(function (p, i) {
     return (
-      '<article class="post-card" data-id="' + p.id + '" tabindex="0" ' +
+      '<article class="post-card" data-id="' + p.id + '" tabindex="0" role="button" ' +
+              'aria-label="阅读文章：' + esc(p.title) + '" ' +
               'style="--reveal-delay:' + (i * 70) + 'ms">' +
         '<div class="cover">' + coverHTML(p, "card") + '</div>' +
         '<div class="post-meta">' +
@@ -227,25 +239,56 @@ function setActiveFilter(name) {
 // ============================================
 // 文章弹窗
 // ============================================
-function openPost(id) {
+// --- 文章间导航：首尾相接循环，呼应「永不完结」的 ∞ ---
+function articleNavHTML(currentId) {
+  var i = POSTS.findIndex(function (x) { return x.id === currentId; });
+  if (i < 0 || POSTS.length < 2) return "";
+  var prev = POSTS[(i - 1 + POSTS.length) % POSTS.length];
+  var next = POSTS[(i + 1) % POSTS.length];
+  return '<nav class="article-nav" aria-label="文章导航">' +
+    '<button type="button" data-goto="' + prev.id + '">' +
+      '<small>← 上一篇</small><span>' + esc(prev.title) + '</span></button>' +
+    '<button type="button" data-goto="' + next.id + '">' +
+      '<small>下一篇 →</small><span>' + esc(next.title) + '</span></button>' +
+  '</nav>';
+}
+
+function updateArticleProgress() {
+  if (!articleProgress) return;
+  var max = dlg.scrollHeight - dlg.clientHeight;
+  // 短文无需滚动时直接显示读满，避免进度条一直空着
+  var ratio = max > 4 ? Math.min(1, dlg.scrollTop / max) : 1;
+  articleProgress.style.transform = "scaleX(" + ratio + ")";
+}
+
+function openPost(id, fromNav, trigger) {
   var p = POSTS.find(function (x) { return x.id === Number(id); });
   if (!p) return;
 
-  document.querySelector("#articleContent").innerHTML =
+  // 记录触发元素，关闭时把焦点还回去（键盘用户不会丢位置）
+  if (!dlg.open && !fromNav) lastTrigger = trigger || document.activeElement;
+
+  articleContent.innerHTML =
     '<p class="eyebrow">' + esc(p.category) + " · " + esc(p.date) + " · " + esc(p.read) + '</p>' +
     '<h1>' + esc(p.title) + '</h1>' +
     '<div class="dialog-cover">' + coverHTML(p, "dialog") + '</div>' +
     '<div class="article-body">' + formatBody(p.body) + '</div>' +
-    '<span class="article-end-mark">未完 · 永不完结</span>';
+    '<span class="article-end-mark">未完 · 永不完结</span>' +
+    articleNavHTML(p.id);
 
-  dlg.showModal();
-  document.body.style.overflow = "hidden";
+  if (!dlg.open) {
+    dlg.showModal();
+    document.body.style.overflow = "hidden";
+  }
   dlg.scrollTop = 0;
+  updateArticleProgress();
 }
 
 function closeDialog() {
   dlg.close();
   document.body.style.overflow = "";
+  if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus();
+  lastTrigger = null;
 }
 
 // ============================================
@@ -281,24 +324,44 @@ searchClear.addEventListener("click", function (e) {
 
 grid.addEventListener("click", function (e) {
   var c = e.target.closest("[data-id]");
-  if (c) openPost(c.dataset.id);
+  if (c) openPost(c.dataset.id, false, c);
 });
 
 grid.addEventListener("keydown", function (e) {
   if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-id]")) {
     e.preventDefault();
-    openPost(e.target.dataset.id);
+    openPost(e.target.dataset.id, false, e.target);
   }
 });
 
 document.querySelector("#closeDialog").addEventListener("click", closeDialog);
 
 dlg.addEventListener("click", function (e) {
-  if (e.target === dlg) closeDialog();
+  if (e.target === dlg) { closeDialog(); return; }
+  var go = e.target.closest("[data-goto]");
+  if (go) {
+    openPost(go.dataset.goto, true);
+    // 内容已重建，把焦点交到仍在的关闭按钮，避免焦点掉回 body
+    var closeBtn = dlg.querySelector(".dialog-close");
+    if (closeBtn) closeBtn.focus();
+  }
 });
 
+// 原生 dialog 的 Esc 统一走 closeDialog，确保滚动锁与焦点都还原
+dlg.addEventListener("cancel", function (e) {
+  e.preventDefault();
+  closeDialog();
+});
+
+dlg.addEventListener("scroll", updateArticleProgress, { passive: true });
+
+// "/" 快速聚焦搜索（输入框内不拦截）
 document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape" && dlg.open) closeDialog();
+  if (e.key !== "/" || dlg.open) return;
+  var t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+  e.preventDefault();
+  search.focus();
 });
 
 // ============================================

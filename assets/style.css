@@ -13,6 +13,7 @@
 /* ---------- 主题变量 ---------- */
 /* 默认深色主题 */
 :root {
+  color-scheme: dark;
   --paper: #13171a;
   --ink: #edeae1;
   --ink-soft: #cbc9c1;
@@ -29,14 +30,25 @@
   --art-grad-3: #352a26;
   --rule: rgba(130, 160, 168, 0.14);
   --accent-soft: rgba(200, 162, 107, 0.22);
+
+  /* 与主题联动的派生色，避免浅色主题下白字/亮金隐形 */
+  --title-grad-from: #ffffff;
+  --title-grad-to: #d6cfc0;
+  --ink-flow: #f2dcb0;
+  --glow-rgb: 200, 162, 107;
+  --sheen: rgba(255, 255, 255, .13);
+  --watermark-opacity: .035;
+  --hairline: rgba(200, 162, 107, .16);
+  --hero-wash: radial-gradient(ellipse at 76% 42%, rgba(200, 162, 107, .055), transparent 62%);
 }
 
 /* 浅色主题 */
-body.light {
+:root.light {
+  color-scheme: light;
   --paper: #f2ece1;
   --ink: #241f19;
   --ink-soft: #4c4840;
-  --muted: #8b867c;
+  --muted: #7a7265;
   --line: #ddd5c6;
   --control-line: #c6bdac;
   --accent: #9a6f43;
@@ -49,6 +61,18 @@ body.light {
   --art-grad-3: #e2cdb0;
   --rule: rgba(80, 120, 140, 0.16);
   --accent-soft: rgba(154, 111, 67, 0.26);
+
+  /* 浅色主题：标题改为深墨→暖褐，保证在米纸上清晰 */
+  --title-grad-from: #2c2620;
+  --title-grad-to: #6d5540;
+  --ink-flow: #8a6234;
+  --glow-rgb: 154, 111, 67;
+  --sheen: rgba(120, 90, 55, .10);
+  --watermark-opacity: .018;
+  --hairline: rgba(154, 111, 67, .22);
+  --hero-wash:
+    radial-gradient(ellipse at 76% 40%, rgba(255, 255, 255, .72), transparent 62%),
+    radial-gradient(ellipse at 8% 92%, rgba(154, 111, 67, .045), transparent 58%);
 }
 
 html {
@@ -86,7 +110,7 @@ body {
   z-index: 1;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgba(185, 155, 112, .07), transparent 68%);
+  background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgba(var(--glow-rgb), .07), transparent 68%);
   transition: opacity .8s ease;
 }
 
@@ -121,7 +145,7 @@ body.pointer-active .cursor-glow {
   height: 0;
   z-index: 60;
   pointer-events: none;
-  background: linear-gradient(var(--accent), rgba(185, 155, 112, 0));
+  background: linear-gradient(var(--accent), rgba(var(--glow-rgb), 0));
   opacity: .55;
 }
 
@@ -170,19 +194,30 @@ body.pointer-active .cursor-glow {
   to   { opacity: 1; transform: none; }
 }
 
-/* ---------- 首屏入场 ---------- */
-.hero-copy > * {
+/* ---------- 首屏入场：标题逐行遮罩揭示，其余依次淡入 ---------- */
+.hero-copy > *:not(h1) {
   animation: heroIn .85s cubic-bezier(.2, .7, .2, 1) both;
 }
 
-.hero-copy > *:nth-child(1) { animation-delay: .06s; }
-.hero-copy > *:nth-child(2) { animation-delay: .20s; }
-.hero-copy > *:nth-child(3) { animation-delay: .34s; }
-.hero-copy > *:nth-child(4) { animation-delay: .48s; }
+.hero-copy > p { animation-delay: .62s; }
+.hero-copy > a { animation-delay: .76s; }
 
 @keyframes heroIn {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: none; }
+}
+
+.hero h1 > * {
+  animation: lineReveal .95s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.hero h1 > *:nth-child(1) { animation-delay: .12s; }
+.hero h1 > *:nth-child(2) { animation-delay: .28s; }
+.hero h1 > *:nth-child(3) { animation-delay: .44s; }
+
+@keyframes lineReveal {
+  from { clip-path: inset(0 0 100% 0); transform: translateY(26px); opacity: 0; }
+  to   { clip-path: inset(-25% -25% -25% -25%); transform: none; opacity: 1; }
 }
 
 .hero-art {
@@ -213,6 +248,24 @@ body.pointer-active .cursor-glow {
   animation: themeReveal .65s cubic-bezier(.3, .7, .3, 1) both;
 }
 
+/* ---------- 点击墨滴涟漪 ---------- */
+.ink-ripple {
+  position: fixed;
+  z-index: 9996;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: rippleOut .7s ease-out forwards;
+}
+
+@keyframes rippleOut {
+  from { transform: scale(1); opacity: .5; }
+  to   { transform: scale(7); opacity: 0; }
+}
+
 /* ---------- 尊重系统「减少动态效果」 ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -223,11 +276,85 @@ body.pointer-active .cursor-glow {
   }
   .reveal-ready [data-reveal].revealed { animation: none; }
   .cursor-glow { display: none; }
+  /* 关闭动效时直接显示完整 ∞，不做书写/流光动画 */
+  .ink-trail { stroke-dashoffset: 0 !important; animation: none !important; }
+  .ink-tip, .ink-flow { display: none; }
+  .tb-marquee { animation: none !important; }
+  .ink-ripple { display: none; }
 }
 
 .wrap {
   width: min(1120px, calc(100% - 48px));
   margin: auto;
+}
+
+/* ---------- 顶部题词横幅 ---------- */
+.top-banner {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 max(24px, calc((100vw - 1120px) / 2));
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font: 9px "Noto Serif SC", serif;
+  letter-spacing: 3px;
+  overflow: hidden;
+  transition: opacity .5s ease, transform .5s ease;
+}
+
+body.banner-hidden .top-banner {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.tb-mark {
+  flex: none;
+  font: 18px "DM Serif Display", serif;
+  color: var(--accent);
+  animation: slowSpin 20s linear infinite;
+}
+
+@keyframes slowSpin {
+  to { transform: rotate(360deg); }
+}
+
+.tb-track {
+  flex: 1;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.tb-marquee {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: max-content;
+  white-space: nowrap;
+  animation: marquee 48s linear infinite;
+}
+
+.tb-track:hover .tb-marquee {
+  animation-play-state: paused;
+}
+
+.tb-marquee i {
+  font-style: normal;
+  color: var(--accent);
+  opacity: .7;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+.tb-side {
+  flex: none;
+  color: var(--accent);
+  opacity: .8;
 }
 
 /* ---------- 顶部导航 ---------- */
@@ -241,7 +368,14 @@ body.pointer-active .cursor-glow {
   top: 0;
   z-index: 100;
   background: var(--paper);
-  transition: background .4s ease;
+  transition: background .4s ease, height .35s ease, box-shadow .35s ease;
+}
+
+/* 向下滚动后导航收缩、浮出一层阴影 */
+.site-header.scrolled {
+  height: 64px;
+  border-bottom-color: var(--control-line);
+  box-shadow: 0 10px 30px -24px var(--shadow);
 }
 
 .brand {
@@ -342,6 +476,8 @@ body.pointer-active .cursor-glow {
   align-items: center;
   gap: 40px;
   position: relative;
+  overflow: hidden;
+  background: var(--hero-wash);
   padding-top: 36px;
   padding-bottom: 84px;
 }
@@ -356,10 +492,10 @@ body.pointer-active .cursor-glow {
   justify-content: center;
   font: 400 min(76vw, 880px)/1 "DM Serif Display", serif;
   color: var(--accent);
-  opacity: .035;
+  opacity: var(--watermark-opacity);
   pointer-events: none;
   user-select: none;
-  transform: rotate(-6deg);
+  transform: rotate(-6deg) translateY(calc(var(--hero-scroll, 0px) * .16));
   overflow: hidden;
 }
 
@@ -417,7 +553,7 @@ body.pointer-active .cursor-glow {
 
 /* 第二行：白到浅金的渐变实心字 */
 .hero h1 .hl:nth-of-type(2) {
-  background: linear-gradient(180deg, #ffffff 18%, #d6cfc0 100%);
+  background: linear-gradient(180deg, var(--title-grad-from) 18%, var(--title-grad-to) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -457,7 +593,8 @@ body.pointer-active .cursor-glow {
 
 .hero-desc {
   font: 14px/2.1 "Noto Serif SC", serif;
-  color: var(--muted);
+  color: var(--ink-soft);
+  opacity: .78;
   max-width: 440px;
 }
 
@@ -575,7 +712,8 @@ body.pointer-active .cursor-glow {
   position: relative;
   z-index: 3;
   width: min(680px, 120%);
-  transform: translateX(-8%);
+  transform: translateX(-8%) translate(var(--ink-px, 0px), var(--ink-py, 0px));
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1);
   overflow: visible;
 }
 
@@ -594,6 +732,28 @@ body.pointer-active .cursor-glow {
   to { stroke-dashoffset: 0; }
 }
 
+/* 写完不擦掉：一道墨光沿 ∞ 循环游走，像笔一直没停 */
+.ink-flow {
+  fill: none;
+  stroke: var(--ink-flow);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 24 976;
+  opacity: .8;
+  animation: inkFlow 6s linear infinite, flowFade .8s ease 3.2s backwards;
+  filter: drop-shadow(0 0 7px var(--accent));
+}
+
+@keyframes inkFlow {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes flowFade {
+  from { opacity: 0; }
+  to   { opacity: .8; }
+}
+
 /* 墨迹晕开层：更粗、模糊、低透明度，叠出墨在纸上洇开的质感 */
 .ink-trail-soft {
   fill: none;
@@ -607,7 +767,7 @@ body.pointer-active .cursor-glow {
 /* 首屏墨晕：一团缓慢呼吸的暖色柔光 */
 .hero-glow {
   position: absolute;
-  inset: -12%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(circle at 50% 50%, var(--accent-soft), transparent 60%);
@@ -623,40 +783,6 @@ body.pointer-active .cursor-glow {
 .ink-tip {
   fill: var(--accent);
   filter: drop-shadow(0 0 9px var(--accent));
-}
-
-.hero-art-label {
-  position: absolute;
-  bottom: 22px;
-  right: 22px;
-  z-index: 4;
-  font: 9px/1.9 "Noto Serif SC", serif;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-align: right;
-}
-
-/* ---------- 首页信息条 ---------- */
-.intro-strip {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 18px 0;
-  display: flex;
-  gap: 32px;
-  font: 11px "Noto Serif SC", serif;
-  color: var(--muted);
-}
-
-.intro-strip span::before {
-  content: "✳";
-  color: var(--accent);
-  margin-right: 9px;
-}
-
-.intro-strip .strip-right {
-  margin-left: auto;
-  font: 10px "Noto Serif SC", serif;
-  letter-spacing: 2px;
 }
 
 /* ---------- 章节分隔符：∞ + 细线（贯穿全站的符号语言） ---------- */
@@ -681,6 +807,34 @@ body.pointer-active .cursor-glow {
   opacity: .7;
 }
 
+/* 进入视口：细线自中心向两侧展开、∞ 旋入。
+   默认始终可见，只有 revealed 才播放 keyframes，绝不因脚本异常留白。 */
+.reveal-ready .divider[data-reveal].revealed {
+  animation: none;
+}
+
+.divider::before { transform-origin: 100% 50%; }
+.divider::after { transform-origin: 0 50%; }
+
+.divider.revealed::before,
+.divider.revealed::after {
+  animation: lineGrow .9s cubic-bezier(.2, .7, .2, 1) backwards;
+}
+
+@keyframes lineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.divider.revealed span {
+  animation: markSpin .9s cubic-bezier(.2, .7, .2, 1) backwards;
+}
+
+@keyframes markSpin {
+  from { opacity: 0; transform: rotate(-120deg) scale(.6); }
+  to   { opacity: .7; transform: none; }
+}
+
 /* ---------- 文章区域 ---------- */
 .section {
   padding: 90px 0;
@@ -698,6 +852,15 @@ body.pointer-active .cursor-glow {
   font: 400 clamp(42px, 6.2vw, 76px)/0.8 "DM Serif Display", serif;
   color: var(--accent);
   opacity: .5;
+}
+
+.revealed .sh-num {
+  animation: numReveal .8s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+@keyframes numReveal {
+  from { opacity: 0; transform: translateY(16px) scale(.92); }
+  to   { opacity: .5; transform: none; }
 }
 
 .sh-num-inline {
@@ -826,11 +989,33 @@ body.pointer-active .cursor-glow {
 }
 
 .post-card {
+  position: relative;
   cursor: pointer;
   transition: transform .35s ease;
   /* 逐张入场：backwards 只保留起始帧，动画结束后 hover 的 transform 不受影响 */
   animation: cardIn .6s cubic-bezier(.2, .7, .2, 1) backwards;
   animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* hover 时卡片底部生长出一道金线 */
+.post-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  opacity: .6;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+}
+
+.post-card:hover::after,
+.post-card:focus::after {
+  transform: scaleX(1);
 }
 
 @keyframes cardIn {
@@ -871,7 +1056,7 @@ body.pointer-active .cursor-glow {
   inset: 0;
   z-index: 5;
   pointer-events: none;
-  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .13) 50%, transparent 62%);
+  background: linear-gradient(105deg, transparent 38%, var(--sheen) 50%, transparent 62%);
   transform: translateX(-130%);
   transition: transform .85s cubic-bezier(.2, .7, .2, 1);
 }
@@ -913,6 +1098,12 @@ body.pointer-active .cursor-glow {
   opacity: .06;
   user-select: none;
   letter-spacing: 4px;
+  transition: transform .6s ease, opacity .6s ease;
+}
+
+.post-card:hover .cover-art-label {
+  transform: translateX(12px);
+  opacity: .11;
 }
 
 /* 角标 ∞ */
@@ -1023,18 +1214,18 @@ body.pointer-active .cursor-glow {
 }
 
 /* 浅色主题下的场景插画墨色 */
-body.light .sc-line { stroke: #7a7363; }
-body.light .sc-ink { fill: #6a6253; }
-body.light .sc-code rect { fill: #6a6253; }
-body.light .sc-paper { fill: #f6f2e8; }
+:root.light .sc-line { stroke: #7a7363; }
+:root.light .sc-ink { fill: #6a6253; }
+:root.light .sc-code rect { fill: #6a6253; }
+:root.light .sc-paper { fill: #f6f2e8; }
 
 /* ---------- 卡片文字 ---------- */
 .post-meta {
   display: flex;
   gap: 12px;
   margin: 18px 0 10px;
-  font: 10px "Noto Serif SC", serif;
-  letter-spacing: .5px;
+  font: 10.5px "Noto Serif SC", serif;
+  letter-spacing: .8px;
   color: var(--muted);
 }
 
@@ -1050,10 +1241,10 @@ body.light .sc-paper { fill: #f6f2e8; }
 }
 
 .post-card h3 {
-  font: 17px/1.7 "Noto Serif SC", serif;
-  margin: 0 0 8px;
+  font: 600 18px/1.6 "Noto Serif SC", serif;
+  letter-spacing: .3px;
+  margin: 0 0 10px;
   color: var(--ink);
-  font-weight: 600;
   transition: color .25s;
 }
 
@@ -1062,8 +1253,9 @@ body.light .sc-paper { fill: #f6f2e8; }
 }
 
 .post-card p {
-  font: 12px/1.9 "Noto Serif SC", serif;
-  color: var(--muted);
+  font: 12.5px/1.95 "Noto Serif SC", serif;
+  color: var(--ink-soft);
+  opacity: .74;
   margin: 0;
 }
 
@@ -1099,13 +1291,24 @@ body.light .sc-paper { fill: #f6f2e8; }
   font: 14px "Noto Serif SC", serif;
 }
 
+.empty::before {
+  content: "∞";
+  display: block;
+  font: 400 42px/1 "DM Serif Display", serif;
+  color: var(--accent);
+  opacity: .45;
+  margin-bottom: 16px;
+}
+
 .hidden {
   display: none;
 }
 
 /* ---------- 分类区域 ---------- */
 .category-feature {
-  background: var(--card);
+  background:
+    linear-gradient(135deg, rgba(var(--glow-rgb), .045), transparent 58%),
+    var(--card);
   padding: 60px 64px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1113,6 +1316,7 @@ body.light .sc-paper { fill: #f6f2e8; }
   margin-bottom: 90px;
   border: 1px solid var(--line);
   border-radius: 2px;
+  box-shadow: 0 18px 50px -40px var(--shadow), inset 0 0 0 1px var(--hairline);
 }
 
 .category-feature h2 {
@@ -1436,9 +1640,25 @@ body.light .sc-paper { fill: #f6f2e8; }
     width: calc(100% - 32px);
   }
 
+  .top-banner {
+    height: 32px;
+    padding: 0 16px;
+    gap: 10px;
+    letter-spacing: 1.5px;
+  }
+
+  .tb-side {
+    display: none;
+  }
+
   .site-header {
     height: 72px;
     position: static;
+  }
+
+  .site-header.scrolled {
+    height: 72px;
+    box-shadow: none;
   }
 
   .site-header nav {
@@ -1497,15 +1717,6 @@ body.light .sc-paper { fill: #f6f2e8; }
 
   .sh-num {
     font-size: clamp(34px, 11vw, 52px);
-  }
-
-  .intro-strip {
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  .intro-strip .strip-right {
-    display: none;
   }
 
   .section {
@@ -1602,13 +1813,7 @@ body.light .sc-paper { fill: #f6f2e8; }
 
   .hero-watermark {
     font-size: min(150vw, 620px);
-    opacity: .03;
-  }
-
-  .hero-art-label {
-    font-size: 8px;
-    bottom: 16px;
-    right: 16px;
+    opacity: calc(var(--watermark-opacity) * .85);
   }
 
   .hero-art-orbit {
@@ -1644,8 +1849,145 @@ body.light .sc-paper { fill: #f6f2e8; }
   .site-header nav {
     gap: 10px;
   }
+}
 
-  .hero h1 {
-    font-size: 26px;
+/* ============================================
+   质感细节：焦点态 / 数字排印 / hairline / 分类 hover
+   ============================================ */
+
+/* 键盘焦点：细线跟随，鼠标点击不显示 */
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  border-radius: 2px;
+}
+
+/* 数字统一为衬线旧体，排印更整齐 */
+.post-meta,
+.muted,
+.hero-masthead,
+.tb-side,
+.top-banner,
+.article-end-mark {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.category-list a span {
+  font: 400 14px/1 "DM Serif Display", serif;
+  letter-spacing: .5px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* 封面极细内边：浅色主题下尤其显质感 */
+.post-card .cover {
+  border: 1px solid var(--hairline);
+}
+
+/* 分类行 hover：一道 accent 细线自左生长 */
+.category-list a {
+  position: relative;
+}
+
+.category-list a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width .45s cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+}
+
+.category-list a:hover::after,
+.category-list a:focus-visible::after {
+  width: 100%;
+}
+
+/* 链接与按钮统一缓动曲线，hover 不再"跳" */
+.site-header nav a,
+.footer a,
+.text-link,
+.filter,
+.icon-btn,
+.to-top {
+  transition-timing-function: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* 中文正文：避免孤字成行 */
+.hero-desc,
+.about p:not(.eyebrow),
+.article-dialog .article-body p {
+  text-wrap: pretty;
+}
+
+/* ============================================
+   打印：把网页收成一页干净的手稿
+   ============================================ */
+@media print {
+  @page { margin: 18mm; }
+
+  .grain, .cursor-glow, .scroll-progress, .ink-thread, .to-top,
+  .top-banner, .site-header nav, .icon-btn, .toolbar, .divider,
+  .hero-watermark, .hero-art, .about-art, .dialog-close,
+  .article-dialog, .read-more, .search, .filters, .empty {
+    display: none !important;
   }
+
+  html, body, :root.light {
+    background: #fff !important;
+    color: #1a1a1a !important;
+  }
+
+  .wrap { width: 100%; max-width: none; }
+
+  .site-header {
+    position: static;
+    height: auto;
+    border: 0;
+    padding: 0 0 12px;
+    box-shadow: none;
+  }
+
+  .hero {
+    min-height: 0;
+    display: block;
+    padding: 8px 0 26px;
+    overflow: visible;
+    background: none !important;
+  }
+
+  .hero h1 .hl:first-of-type {
+    color: #1a1a1a;
+    -webkit-text-fill-color: #1a1a1a;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+
+  .hero h1 .hl:nth-of-type(2) {
+    background: none;
+    color: #1a1a1a;
+    -webkit-text-fill-color: #1a1a1a;
+  }
+
+  .hero h1 .hl-sub,
+  .eyebrow { color: #1a1a1a !important; }
+
+  .hero-desc, .about p:not(.eyebrow), .post-card p, .post-meta {
+    color: #444 !important;
+  }
+
+  .section, .about, .category-feature { padding: 16px 0; }
+  .post-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .post-card { animation: none; break-inside: avoid; }
+  .post-card .cover { display: none; }
+  .category-feature { border: 0; background: none; }
+  .footer { border-top: 1px solid #ccc; }
+  a { color: inherit !important; text-decoration: none; }
 }

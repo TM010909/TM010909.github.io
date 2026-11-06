@@ -31,9 +31,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <!-- 在任何绘制之前应用已保存的主题，避免浅色用户刷新时闪一下深色 -->
+  <script>
+    try {
+      if (localStorage.getItem("ybwj-theme") === "light") {
+        document.documentElement.classList.add("light");
+      }
+    } catch (e) {}
+  </script>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body id="top">
+
+<!-- 顶部题词横幅：缓慢流动的刊头题词 -->
+<div class="top-banner" id="topBanner" aria-hidden="true">
+  <span class="tb-mark">∞</span>
+  <div class="tb-track">
+    <div class="tb-marquee">
+      <span>故事还没有写完</span><i>∞</i>
+      <span>不追热点，也不赶进度</span><i>∞</i>
+      <span>想到就写</span><i>∞</i>
+      <span>一直写下去</span><i>∞</i>
+      <span>故事还没有写完</span><i>∞</i>
+      <span>不追热点，也不赶进度</span><i>∞</i>
+      <span>想到就写</span><i>∞</i>
+      <span>一直写下去</span><i>∞</i>
+    </div>
+  </div>
+  <span class="tb-side">EST. 2026</span>
+</div>
 
 <!-- 纸张颗粒 / 光晕 / 阅读进度 / 生长的墨线 -->
 <div class="grain" aria-hidden="true"></div>
@@ -100,6 +126,8 @@
             d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
       <path id="inkStroke" class="ink-trail" pathLength="1000"
             d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
+      <path class="ink-flow" pathLength="1000"
+            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
       <circle class="ink-tip" r="5">
         <animateMotion dur="6s" repeatCount="indefinite">
           <mpath href="#inkStroke" />
@@ -112,7 +140,7 @@
 </section>
 
 
-    <div class="divider wrap" aria-hidden="true"><span>∞</span></div>
+    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
     <section id="latest" class="wrap section">
       <div class="section-heading" data-reveal>
@@ -135,7 +163,7 @@
       <p id="emptyState" class="empty hidden">没找到。换个词，或者看看别的分类。</p>
     </section>
 
-    <div class="divider wrap" aria-hidden="true"><span>∞</span></div>
+    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
     <section id="categories" class="wrap category-feature" data-reveal>
       <div class="cf-head">
@@ -153,7 +181,7 @@
       </div>
     </section>
 
-    <div class="divider wrap" aria-hidden="true"><span>∞</span></div>
+    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
     <section id="about" class="wrap about">
       <!-- 一封还没写完的信 -->

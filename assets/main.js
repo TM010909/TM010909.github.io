@@ -93,6 +93,9 @@ var inkThread = document.querySelector("#inkThread");
 var toTop = document.querySelector("#toTop");
 var glow = document.querySelector("#cursorGlow");
 var themeBtn = document.querySelector("#themeToggle");
+var header = document.querySelector(".site-header");
+var heroEl = document.querySelector(".hero");
+var heroArt = document.querySelector(".hero-art");
 
 // --- HTML 转义 ---
 function esc(s) {
@@ -302,8 +305,16 @@ document.addEventListener("keydown", function (e) {
 // 滚动：进度条 / 墨线 / 回到顶部 / 导航高亮
 // ============================================
 var sectionIds = ["latest", "categories", "about"];
+var sectionEls = sectionIds.map(function (id) { return document.getElementById(id); });
 var navLinks = Array.prototype.slice.call(document.querySelectorAll(".site-header nav a"));
 var scrollTicking = false;
+
+// 只在状态真正变化时才写 DOM，避免每帧无谓的重绘
+var lastBannerHidden = null;
+var lastScrolled = null;
+var lastToTop = null;
+var lastCurrent = null;
+var lastHeroScroll = -1;
 
 function onScrollFrame() {
   scrollTicking = false;
@@ -315,19 +326,47 @@ function onScrollFrame() {
 
   if (progress) progress.style.transform = "scaleX(" + ratio + ")";
   if (inkThread) inkThread.style.height = (ratio * 100) + "vh";
-  if (toTop) toTop.classList.toggle("visible", y > 500);
+
+  var showToTop = y > 500;
+  if (showToTop !== lastToTop) {
+    lastToTop = showToTop;
+    if (toTop) toTop.classList.toggle("visible", showToTop);
+  }
+
+  // 顶部横幅淡出、导航收缩、首屏水印视差（全部由同一帧驱动）
+  var hideBanner = y > 30;
+  if (hideBanner !== lastBannerHidden) {
+    lastBannerHidden = hideBanner;
+    document.body.classList.toggle("banner-hidden", hideBanner);
+  }
+
+  var isScrolled = y > 40;
+  if (isScrolled !== lastScrolled) {
+    lastScrolled = isScrolled;
+    if (header) header.classList.toggle("scrolled", isScrolled);
+  }
+
+  if (heroEl) {
+    var heroY = Math.min(y, 900);
+    if (Math.abs(heroY - lastHeroScroll) > 2) {
+      lastHeroScroll = heroY;
+      heroEl.style.setProperty("--hero-scroll", heroY + "px");
+    }
+  }
 
   var current = "";
-  sectionIds.forEach(function (id) {
-    var el = document.getElementById(id);
+  sectionEls.forEach(function (el, i) {
     if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) {
-      current = id;
+      current = sectionIds[i];
     }
   });
 
-  navLinks.forEach(function (a) {
-    a.classList.toggle("current", a.getAttribute("href") === "#" + current);
-  });
+  if (current !== lastCurrent) {
+    lastCurrent = current;
+    navLinks.forEach(function (a) {
+      a.classList.toggle("current", a.getAttribute("href") === "#" + current);
+    });
+  }
 }
 
 function onScroll() {
@@ -363,6 +402,14 @@ if (finePointer && !reduceMotion && glow) {
         glow.style.setProperty("--mx", mx + "px");
         glow.style.setProperty("--my", my + "px");
         document.body.classList.add("pointer-active");
+
+        // ∞ 墨迹随指针轻微反向漂移，制造空间层次
+        if (heroArt) {
+          var nx = (mx / window.innerWidth - .5) * 2;
+          var ny = (my / window.innerHeight - .5) * 2;
+          heroArt.style.setProperty("--ink-px", (-nx * 12).toFixed(1) + "px");
+          heroArt.style.setProperty("--ink-py", (-ny * 9).toFixed(1) + "px");
+        }
       });
     }
   }, { passive: true });
@@ -373,12 +420,30 @@ if (finePointer && !reduceMotion && glow) {
 }
 
 // ============================================
+// 点击墨滴涟漪（很淡的交互彩蛋，输入框内不触发）
+// ============================================
+if (!reduceMotion) {
+  document.addEventListener("pointerdown", function (e) {
+    if (e.target.closest && e.target.closest("input, textarea, .search")) return;
+    var r = document.createElement("span");
+    r.className = "ink-ripple";
+    r.style.left = e.clientX + "px";
+    r.style.top = e.clientY + "px";
+    document.body.appendChild(r);
+    window.setTimeout(function () {
+      if (r.parentNode) r.parentNode.removeChild(r);
+    }, 700);
+  }, { passive: true });
+}
+
+// ============================================
 // 主题切换：localStorage 记忆 + 圆形扩散过渡
 // ============================================
 var THEME_KEY = "ybwj-theme";
 
 function applyTheme(isLight) {
-  document.body.classList.toggle("light", isLight);
+  // 主题类挂在 <html> 上：与 head 中的预置脚本一致，避免刷新闪烁
+  document.documentElement.classList.toggle("light", isLight);
   themeBtn.setAttribute("aria-label", isLight ? "切换夜间模式" : "切换日间模式");
 }
 
@@ -389,7 +454,7 @@ function saveTheme(isLight) {
 }
 
 themeBtn.addEventListener("click", function () {
-  var isLight = !document.body.classList.contains("light");
+  var isLight = !document.documentElement.classList.contains("light");
 
   var rect = themeBtn.getBoundingClientRect();
   var x = rect.left + rect.width / 2;

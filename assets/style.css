@@ -2513,3 +2513,284 @@ input:focus-visible {
   .hero-masthead span:first-child::before,
   .hero-masthead-right::after { display: none !important; }
 }
+
+/* 点击导航跳转时给固定导航留出空间，避免区块标题被盖住 */
+section[id] { scroll-margin-top: 96px; }
+
+@media (max-width: 700px) {
+  section[id] { scroll-margin-top: 26px; }
+}
+
+/* ============================================
+   神秘感：薄雾 / 行星符咒带 / 月相盈亏
+   ============================================ */
+
+.mists {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(139, 118, 181, .055), transparent 46%),
+    radial-gradient(ellipse at 80% 70%, rgba(202, 167, 94, .045), transparent 48%);
+  animation: mistDrift 36s ease-in-out infinite alternate;
+}
+
+@keyframes mistDrift {
+  0%   { transform: translate(0, 0) scale(1); opacity: .55; }
+  100% { transform: translate(4%, -3%) scale(1.12); opacity: 1; }
+}
+
+.hero-incantation {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  z-index: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  font: 12px Georgia, "DM Serif Display", serif;
+  letter-spacing: 22px;
+  color: var(--sigil);
+  opacity: .3;
+  pointer-events: none;
+  animation: incantDrift 42s ease-in-out infinite alternate;
+}
+
+@keyframes incantDrift {
+  from { transform: translateX(2.5%); }
+  to   { transform: translateX(-2.5%); }
+}
+
+/* 弦月盈亏：遮罩圆左右游走 + 隐现 */
+.sigil-moon::after {
+  animation: moonPhase 32s linear infinite;
+}
+
+@keyframes moonPhase {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  25%      { transform: translateX(-16px); opacity: 0; }
+  50%      { transform: translateX(11px); opacity: 1; }
+  75%      { transform: translateX(-16px); opacity: 0; }
+}
+
+/* ============================================
+   IV · 显影（影像区）
+   ============================================ */
+
+.visions { padding-bottom: 100px; }
+
+.vision-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin: 8px 0 30px;
+}
+
+.vision-grid:empty { display: none; }
+
+.vision-card {
+  position: relative;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+
+.vision-card::before,
+.vision-card::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: solid var(--sigil);
+  pointer-events: none;
+}
+
+.vision-card::before { top: 5px; left: 5px; border-width: 1px 0 0 1px; }
+.vision-card::after { right: 5px; bottom: 5px; border-width: 0 1px 1px 0; }
+
+.vision-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #07090c;
+  border: 1px solid var(--sigil-soft);
+}
+
+.vision-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, .7);
+}
+
+.vision-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vision-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 80px "DM Serif Display", serif;
+  color: var(--sigil);
+  opacity: .35;
+}
+
+.vision-meta { padding: 14px 4px 4px; }
+
+.vision-meta h3 {
+  font: 500 15px/1.6 "Noto Serif SC", serif;
+  letter-spacing: .5px;
+  color: var(--ink);
+}
+
+.vision-meta p {
+  margin-top: 6px;
+  font: 11px/1.7 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.vision-card.is-local {
+  border-color: var(--sigil);
+  animation: visionAppear .85s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+@keyframes visionAppear {
+  from { opacity: 0; filter: blur(12px); transform: scale(.98) translateY(10px); }
+  to   { opacity: 1; filter: none; transform: none; }
+}
+
+.vision-remove {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--sigil);
+  border-radius: 50%;
+  background: rgba(13, 16, 20, .7);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .25s, color .25s, transform .25s;
+}
+
+.vision-remove:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* 投影片的祭坛 */
+.vision-altar {
+  position: relative;
+  padding: 46px 24px 40px;
+  text-align: center;
+  border: 1px dashed var(--sigil);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(var(--glow-rgb), .055), transparent 65%),
+    var(--card);
+  transition: border-color .3s, box-shadow .3s;
+}
+
+.vision-altar::before,
+.vision-altar::after {
+  content: "✦";
+  position: absolute;
+  color: var(--sigil);
+  font-size: 10px;
+}
+
+.vision-altar::before { top: 10px; left: 12px; }
+.vision-altar::after { bottom: 10px; right: 12px; }
+
+.vision-altar.is-dragging {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 70px rgba(var(--glow-rgb), .12);
+}
+
+.va-sigil {
+  display: block;
+  font-size: 26px;
+  color: var(--accent);
+  opacity: .8;
+  margin-bottom: 14px;
+  animation: sigilPulse 6s ease-in-out infinite;
+}
+
+@keyframes sigilPulse {
+  0%, 100% { opacity: .5; transform: rotate(0) scale(1); }
+  50% { opacity: 1; transform: rotate(45deg) scale(1.1); }
+}
+
+.vision-altar h3 {
+  font: 500 17px/1.6 "Noto Serif SC", serif;
+  letter-spacing: 3px;
+  color: var(--ink);
+}
+
+.va-hint {
+  margin-top: 10px;
+  font: 11px/1.9 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.va-btn {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 10px 26px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font: 12px "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .3s, box-shadow .3s;
+}
+
+.va-btn:hover {
+  background: rgba(var(--glow-rgb), .14);
+  box-shadow: 0 0 24px -10px var(--accent);
+}
+
+.va-status {
+  min-height: 1.4em;
+  margin-top: 16px;
+  font: 11px "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .site-header nav { gap: 12px; }
+  .hero-incantation { font-size: 9px; letter-spacing: 12px; bottom: 10px; }
+  .visions { padding-bottom: 65px; }
+  .vision-grid { grid-template-columns: 1fr; gap: 20px; }
+  .vision-altar { padding: 34px 18px 30px; }
+  .va-hint { font-size: 10px; }
+}
+
+@media (max-width: 420px) {
+  .site-header nav { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mists, .hero-incantation, .sigil-moon::after, .va-sigil,
+  .vision-card.is-local { animation: none !important; }
+  .mists { opacity: .5; }
+}
+
+@media print {
+  .mists, .hero-incantation, #visions { display: none !important; }
+}

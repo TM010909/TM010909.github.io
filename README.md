@@ -56,6 +56,15 @@
 
 字体来自 Google Fonts，需要联网加载；断网时会回退到系统字体，不影响阅读。
 
+## 影像区（IV · 显影）
+
+页面底部有一个「显影」区，两种方式都能用：
+
+- **本地预览**：点「选择视频」或把文件拖进框里，视频会立刻在页面上播放。文件只在本机浏览器里以 blob URL 打开，**不会上传到任何服务器**，刷新即消失；点卡片右上角的 × 可收回。
+- **常驻影片**：把 `mp4` / `webm` 放进 `assets/videos/`，在 `assets/videos.js` 的 `window.VIDEOS` 里填一条 `{ title, src, poster, note }`，提交到仓库后所有访客都能看到。`poster`（封面）和 `note`（一行小字）可留空。
+
+默认 `VIDEOS` 是空数组，此时只显示上传祭坛。站点是纯静态页面，没有后端存储，所以「上传」只做本地预览——这是刻意的设计，不需要数据库或第三方服务。
+
 ## SEO
 
 `index.html` 内含 description、Open Graph、Twitter Card、canonical、theme-color 与 `application/ld+json` 结构化数据（WebSite / Blog / Person）。`og-image.png` 是 1200×630 的社交分享卡片，`robots.txt` 与 `sitemap.xml` 供搜索引擎收录。
@@ -67,7 +76,8 @@
 | `index.html` | 页面结构与文案、SEO 元信息、主题预置脚本 |
 | `assets/style.css` | 主题配色、布局、SVG 场景与主视觉、打印样式 |
 | `assets/posts.js` | 文章数据 |
-| `assets/main.js` | 筛选、搜索、弹窗、文章导航、主题切换、动效 |
+| `assets/videos.js` | 常驻影像配置 |
+| `assets/main.js` | 筛选、搜索、弹窗、文章导航、影像预览、主题切换、动效 |
 | `og-image.png` | 社交分享卡片（1200×630） |
 | `robots.txt` / `sitemap.xml` | 搜索引擎收录 |
 

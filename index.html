@@ -103,7 +103,8 @@
   <span class="tb-side">EST. 2026</span>
 </div>
 
-<!-- 纸张颗粒 / 暗角 / 星尘 / 光晕 / 阅读进度 / 生长的墨线 -->
+<!-- 薄雾 / 纸张颗粒 / 暗角 / 星尘 / 光晕 / 阅读进度 / 生长的墨线 -->
+<div class="mists" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="stardust" aria-hidden="true"></div>
@@ -123,6 +124,7 @@
   <nav>
     <a href="#latest">文章</a>
     <a href="#categories">分类</a>
+    <a href="#visions">影像</a>
     <a href="#about">关于</a>
   </nav>
 
@@ -185,6 +187,9 @@
 
     <div class="hero-art-orbit"></div>
   </div>
+
+  <!-- 行星符咒带 -->
+  <div class="hero-incantation" aria-hidden="true">☉ ☽ ☿ ♀ ♁ ♂ ♃ ♄ ☉ ☽ ☿ ♀ ♁ ♂ ♃ ♄</div>
 </section>
 
 
@@ -252,6 +257,31 @@
         <a class="text-link" href="mailto:1219093662@qq.com">写信给我 <span>↗</span></a>
       </div>
     </section>
+
+    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
+
+    <section id="visions" class="wrap visions">
+      <div class="section-heading" data-reveal>
+        <span class="sh-num">IV</span>
+        <div class="sh-body">
+          <p class="eyebrow">SPECTRA</p>
+          <h2>显影</h2>
+        </div>
+        <span class="muted" id="visionCount" aria-live="polite">共 0 帧</span>
+      </div>
+
+      <div class="vision-grid" id="visionGrid"></div>
+
+      <!-- 投影片的祭坛：本地预览，不上传服务器 -->
+      <div class="vision-altar" id="visionAltar" data-reveal>
+        <span class="va-sigil" aria-hidden="true">✦</span>
+        <h3>投进一段影</h3>
+        <p class="va-hint">选择或拖入视频，只在此处显影 · 不会上传到任何地方</p>
+        <label class="va-btn" for="visionInput">选择视频</label>
+        <input id="visionInput" type="file" accept="video/*" hidden>
+        <p class="va-status" id="visionStatus" aria-live="polite"></p>
+      </div>
+    </section>
   </main>
 
   <footer class="wrap footer">
@@ -272,6 +302,7 @@
   </dialog>
 
   <script src="assets/posts.js"></script>
+  <script src="assets/videos.js"></script>
   <script src="assets/main.js"></script>
 </body>
 </html>

@@ -426,7 +426,7 @@ document.addEventListener("keydown", function (e) {
 // ============================================
 // 滚动：进度条 / 墨线 / 回到顶部 / 导航高亮
 // ============================================
-var sectionIds = ["latest", "categories", "about"];
+var sectionIds = ["latest", "categories", "visions", "about"];
 var sectionEls = sectionIds.map(function (id) { return document.getElementById(id); });
 var navLinks = Array.prototype.slice.call(document.querySelectorAll(".site-header nav a"));
 var scrollTicking = false;
@@ -477,9 +477,16 @@ function onScrollFrame() {
     }
   }
 
+  // 取「已进入视口上三分之一、且离顶部最近」的区块。
+  // 相邻区块挨得近时，不能简单取最后一个，否则下一区块会提前抢占高亮。
+  var probeLine = window.innerHeight * 0.35;
   var current = "";
+  var nearestTop = -Infinity;
   sectionEls.forEach(function (el, i) {
-    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) {
+    if (!el) return;
+    var top = el.getBoundingClientRect().top;
+    if (top <= probeLine && top > nearestTop) {
+      nearestTop = top;
       current = sectionIds[i];
     }
   });
@@ -632,3 +639,108 @@ onScrollFrame();
 // 以 #post-N 直接进入时自动打开对应文章
 var bootMatch = /^#post-(\d+)$/.exec(location.hash);
 if (bootMatch) openPost(bootMatch[1], false, null, true);
+
+// ============================================
+// IV · 显影：常驻影像 + 本地视频预览
+// 纯前端：本地文件用 blob URL 只在当前浏览器播放，不上传任何服务器
+// ============================================
+var VIDEO_LIST = Array.isArray(window.VIDEOS) ? window.VIDEOS : [];
+var visionGrid = document.querySelector("#visionGrid");
+var visionAltar = document.querySelector("#visionAltar");
+var visionInput = document.querySelector("#visionInput");
+var visionStatus = document.querySelector("#visionStatus");
+var visionCount = document.querySelector("#visionCount");
+var localVideo = null;
+var localObjectUrl = null;
+
+function setVisionStatus(msg) {
+  if (visionStatus) visionStatus.textContent = msg;
+}
+
+function visionCardHTML(v, isLocal) {
+  var media = v.src
+    ? '<video controls playsinline preload="metadata"' +
+        (v.poster ? ' poster="' + esc(v.poster) + '"' : '') +
+        ' src="' + esc(v.src) + '"></video>'
+    : '<div class="vision-placeholder">∞</div>';
+  return '<article class="vision-card' + (isLocal ? " is-local" : "") + '">' +
+    '<div class="vision-frame">' + media + '</div>' +
+    '<div class="vision-meta"><h3>' + esc(v.title || "未命名") + '</h3>' +
+      (v.note ? '<p>' + esc(v.note) + '</p>' : '') + '</div>' +
+    (isLocal
+      ? '<button class="vision-remove" type="button" data-remove-local aria-label="移除本地预览">×</button>'
+      : '') +
+  '</article>';
+}
+
+function renderVisions() {
+  if (!visionGrid) return;
+  var items = VIDEO_LIST.slice();
+  if (localVideo) items.unshift(localVideo);
+  visionGrid.innerHTML = items.map(function (v) {
+    return visionCardHTML(v, v === localVideo);
+  }).join("");
+  if (visionCount) visionCount.textContent = "共 " + items.length + " 帧";
+}
+
+function releaseLocalVideo() {
+  var el = visionGrid && visionGrid.querySelector("video");
+  if (el) {
+    try { el.pause(); el.removeAttribute("src"); } catch (e) {}
+  }
+  if (localObjectUrl) {
+    URL.revokeObjectURL(localObjectUrl);
+    localObjectUrl = null;
+  }
+  localVideo = null;
+}
+
+function acceptVideoFile(file) {
+  if (!file) return;
+  if (file.type && file.type.indexOf("video/") !== 0) {
+    setVisionStatus("只接受视频文件");
+    return;
+  }
+  releaseLocalVideo();
+  localObjectUrl = URL.createObjectURL(file);
+  localVideo = {
+    title: (file.name || "一段影").replace(/\.[^.]+$/, ""),
+    src: localObjectUrl,
+    note: "本地预览 · 刷新后消失"
+  };
+  renderVisions();
+  setVisionStatus("已显影：" + (file.name || ""));
+}
+
+if (visionInput) {
+  visionInput.addEventListener("change", function (e) {
+    acceptVideoFile(e.target.files && e.target.files[0]);
+    visionInput.value = ""; // 允许重复选择同一个文件
+  });
+}
+
+if (visionAltar) {
+  visionAltar.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    visionAltar.classList.add("is-dragging");
+  });
+  visionAltar.addEventListener("dragleave", function () {
+    visionAltar.classList.remove("is-dragging");
+  });
+  visionAltar.addEventListener("drop", function (e) {
+    e.preventDefault();
+    visionAltar.classList.remove("is-dragging");
+    acceptVideoFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+  });
+}
+
+if (visionGrid) {
+  visionGrid.addEventListener("click", function (e) {
+    if (!e.target.closest("[data-remove-local]")) return;
+    releaseLocalVideo();
+    renderVisions();
+    setVisionStatus("已收回这段影");
+  });
+}
+
+renderVisions();

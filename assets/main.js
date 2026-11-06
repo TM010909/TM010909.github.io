@@ -90,7 +90,23 @@ var dlg = document.querySelector("#articleDialog");
 var articleContent = document.querySelector("#articleContent");
 var articleProgress = document.querySelector("#articleReadProgress");
 var lastTrigger = null;
+var currentPostId = null;
 var postCount = document.querySelector("#postCount");
+
+// 文章深链 #post-N：让每篇文章可被分享、收藏、前进后退。
+// file:// 直接打开时 history API 受限，静默降级（不影响阅读）。
+function setPostHash(id, replace) {
+  try {
+    var hash = "#post-" + id;
+    if (replace) history.replaceState({ post: id }, "", hash);
+    else history.pushState({ post: id }, "", hash);
+  } catch (e) {}
+}
+
+function clearPostHash() {
+  if (!/^#post-\d+$/.test(location.hash)) return;
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+}
 var progress = document.querySelector("#scrollProgress");
 var inkThread = document.querySelector("#inkThread");
 var toTop = document.querySelector("#toTop");
@@ -261,12 +277,17 @@ function updateArticleProgress() {
   articleProgress.style.transform = "scaleX(" + ratio + ")";
 }
 
-function openPost(id, fromNav, trigger) {
+function openPost(id, fromNav, trigger, fromHash) {
   var p = POSTS.find(function (x) { return x.id === Number(id); });
   if (!p) return;
 
+  currentPostId = p.id;
+
   // 记录触发元素，关闭时把焦点还回去（键盘用户不会丢位置）
-  if (!dlg.open && !fromNav) lastTrigger = trigger || document.activeElement;
+  if (!dlg.open && !fromNav && !fromHash) lastTrigger = trigger || document.activeElement;
+
+  // 打开写入历史、切换文章替换当前条；来自 hashchange 的调用不再改写 URL
+  if (!fromHash) setPostHash(p.id, !!fromNav);
 
   articleContent.innerHTML =
     '<p class="eyebrow">' + esc(p.category) + " · " + esc(p.date) + " · " + esc(p.read) + '</p>' +
@@ -274,6 +295,7 @@ function openPost(id, fromNav, trigger) {
     '<div class="dialog-cover">' + coverHTML(p, "dialog") + '</div>' +
     '<div class="article-body">' + formatBody(p.body) + '</div>' +
     '<span class="article-end-mark">未完 · 永不完结</span>' +
+    '<button type="button" class="copy-link" data-copy-link>复制本文链接 ⧉</button>' +
     articleNavHTML(p.id);
 
   if (!dlg.open) {
@@ -284,9 +306,12 @@ function openPost(id, fromNav, trigger) {
   updateArticleProgress();
 }
 
-function closeDialog() {
+function closeDialog(skipHash) {
+  if (!dlg.open) return;
   dlg.close();
   document.body.style.overflow = "";
+  currentPostId = null;
+  if (!skipHash) clearPostHash();
   if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus();
   lastTrigger = null;
 }
@@ -334,10 +359,44 @@ grid.addEventListener("keydown", function (e) {
   }
 });
 
-document.querySelector("#closeDialog").addEventListener("click", closeDialog);
+// 包一层，避免把 Event 对象当成 closeDialog 的参数传进去
+document.querySelector("#closeDialog").addEventListener("click", function () { closeDialog(); });
+
+function copyLinkFallback(text) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta);
+}
 
 dlg.addEventListener("click", function (e) {
   if (e.target === dlg) { closeDialog(); return; }
+
+  var cp = e.target.closest("[data-copy-link]");
+  if (cp) {
+    var url = location.href;
+    var done = function () {
+      cp.classList.add("copied");
+      cp.textContent = "已复制 ✓";
+      window.setTimeout(function () {
+        cp.classList.remove("copied");
+        cp.textContent = "复制本文链接 ⧉";
+      }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, function () {
+        copyLinkFallback(url); done();
+      });
+    } else {
+      copyLinkFallback(url); done();
+    }
+    return;
+  }
+
   var go = e.target.closest("[data-goto]");
   if (go) {
     openPost(go.dataset.goto, true);
@@ -409,11 +468,12 @@ function onScrollFrame() {
     if (header) header.classList.toggle("scrolled", isScrolled);
   }
 
-  if (heroEl) {
+  if (heroEl && !reduceMotion) {
     var heroY = Math.min(y, 900);
     if (Math.abs(heroY - lastHeroScroll) > 2) {
       lastHeroScroll = heroY;
       heroEl.style.setProperty("--hero-scroll", heroY + "px");
+      heroEl.style.setProperty("--hero-fade", Math.max(.62, 1 - heroY / 1400).toFixed(3));
     }
   }
 
@@ -548,6 +608,19 @@ try {
 } catch (e) {}
 
 // ============================================
+// 文章深链：URL 变化（刷新 / 收藏 / 前进后退）同步弹窗
+// ============================================
+window.addEventListener("hashchange", function () {
+  var m = /^#post-(\d+)$/.exec(location.hash);
+  if (m) {
+    var id = Number(m[1]);
+    if (!dlg.open || currentPostId !== id) openPost(id, dlg.open, null, true);
+  } else if (dlg.open) {
+    closeDialog(true); // hash 已由外部改变，不再回写
+  }
+});
+
+// ============================================
 // 初始化
 // ============================================
 renderFilters();
@@ -555,3 +628,7 @@ render();
 syncClear();
 observeReveals(document);
 onScrollFrame();
+
+// 以 #post-N 直接进入时自动打开对应文章
+var bootMatch = /^#post-(\d+)$/.exec(location.hash);
+if (bootMatch) openPost(bootMatch[1], false, null, true);

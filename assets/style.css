@@ -2119,3 +2119,48 @@ input:focus-visible {
     align-items: flex-start;
   }
 }
+
+/* ============================================
+   文章深链 / 复制链接 / 大屏节奏 / 首屏滚动层次
+   ============================================ */
+
+.copy-link {
+  display: block;
+  margin: 20px auto 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 11px "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color .25s;
+}
+
+.copy-link:hover,
+.copy-link.copied {
+  color: var(--accent);
+}
+
+/* 首屏随滚动轻微上移、渐隐，制造纵深；reduce-motion 下 JS 不写变量，保持静止 */
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  opacity: var(--hero-fade, 1);
+  transform: translateY(calc(var(--hero-scroll, 0px) * -0.04));
+}
+
+/* 宽屏：内容更饱满，但不把行宽拉得过长 */
+@media (min-width: 1600px) {
+  .wrap { width: min(1240px, calc(100% - 200px)); }
+  .hero { gap: 64px; }
+  .post-grid { gap: 48px 30px; }
+}
+
+@media (min-width: 2000px) {
+  .wrap { width: min(1360px, calc(100% - 280px)); }
+}
+
+@media print {
+  .copy-link { display: none !important; }
+}

@@ -163,6 +163,16 @@ function coverHTML(p, place) {
   return coverArt(p);
 }
 
+// --- 目录行左侧的圆形元素徽记（四元素符号；场景插画保留在文章弹窗里） ---
+var ELEMENT_GLYPH = { "生活": "▽", "旅行": "▽", "技术": "△", "随笔": "△" };
+
+function medallionHTML(p) {
+  if (p.image) return '<img src="' + esc(p.image) + '" alt="">';
+  var slug = CATEGORY_SLUG[p.category] || "note";
+  return '<span class="md-glyph md-' + slug + '">' +
+           (ELEMENT_GLYPH[p.category] || "✦") + '</span>';
+}
+
 // --- 更新文章计数 ---
 function updateCount(n) {
   if (!postCount) return;
@@ -216,20 +226,25 @@ function render() {
     return matchCategory && matchSearch;
   });
 
+  var ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+
   grid.innerHTML = list.map(function (p, i) {
     return (
-      '<article class="post-card" data-id="' + p.id + '" tabindex="0" role="button" ' +
+      '<article class="index-row" data-id="' + p.id + '" tabindex="0" role="button" ' +
               'aria-label="阅读文章：' + esc(p.title) + '" ' +
-              'style="--reveal-delay:' + (i * 70) + 'ms">' +
-        '<div class="cover">' + coverHTML(p, "card") + '</div>' +
-        '<div class="post-meta">' +
-          '<span class="tag">' + esc(p.category) + '</span>' +
-          '<span>' + esc(p.date) + '</span>' +
-          '<span>' + esc(p.read) + '</span>' +
-        '</div>' +
-        '<h3>' + esc(p.title) + '</h3>' +
-        '<p>' + esc(p.excerpt) + '</p>' +
-        '<span class="read-more">接着读 ↗</span>' +
+              'style="--reveal-delay:' + (i * 80) + 'ms">' +
+        '<span class="ir-num" aria-hidden="true">' + (ROMAN[i] || String(i + 1)) + '</span>' +
+        '<span class="ir-medallion" aria-hidden="true">' + medallionHTML(p) + '</span>' +
+        '<span class="ir-body">' +
+          '<span class="ir-cat">' + esc(p.category) + '</span>' +
+          '<span class="ir-title">' + esc(p.title) + '</span>' +
+          '<span class="ir-excerpt">' + esc(p.excerpt) + '</span>' +
+        '</span>' +
+        '<span class="ir-tail">' +
+          '<span class="ir-date">' + esc(p.date) + '</span>' +
+          '<span class="ir-read">' + esc(p.read) + '</span>' +
+          '<span class="ir-go" aria-hidden="true">❧</span>' +
+        '</span>' +
       '</article>'
     );
   }).join("");

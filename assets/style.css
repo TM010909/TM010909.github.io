@@ -2794,3 +2794,786 @@ section[id] { scroll-margin-top: 96px; }
 @media print {
   .mists, .hero-incantation, #visions { display: none !important; }
 }
+
+/* ============================================================
+   CODEX REFACTOR · 全体重构
+   从「现代杂志」改为「密教手稿」：居中扉页 / 目录式索引 /
+   四元素方阵 / 印记页 / 黑镜。本层位于样式表末尾统一覆盖旧版式。
+   ============================================================ */
+
+/* ---------- 色板：深褐墨 · 旧金 · 朱砂 rubrication ---------- */
+:root {
+  --paper: #0b0907;
+  --ink: #e8dcbd;
+  --ink-soft: #cbbd9a;
+  --muted: #9a8c70;
+  --line: #3a3021;
+  --control-line: #5a4a30;
+  --accent: #c9a227;
+  --accent-2: #7b5aa6;
+  --card: #13100c;
+  --shadow: rgba(0, 0, 0, .7);
+  --rubric: #b04a38;
+  --sigil: rgba(201, 162, 39, .5);
+  --sigil-soft: rgba(201, 162, 39, .14);
+  --hairline: rgba(201, 162, 39, .2);
+  --glow-rgb: 201, 162, 39;
+  --accent-soft: rgba(201, 162, 39, .2);
+  --selection: rgba(201, 162, 39, .28);
+  --rule: rgba(201, 162, 39, .1);
+  --vignette: rgba(0, 0, 0, .78);
+  --rays: rgba(201, 162, 39, .04);
+  --seal: #8f3b2e;
+  --title-grad-from: #f6e7bb;
+  --title-grad-to: #c0982f;
+  --ink-flow: #f3d98a;
+  --watermark-opacity: .03;
+  --sheen: rgba(246, 226, 174, .1);
+  --hero-wash: radial-gradient(ellipse at 50% 36%, rgba(201, 162, 39, .07), transparent 66%);
+}
+
+:root.light {
+  --paper: #e5d4ac;
+  --ink: #2c2114;
+  --ink-soft: #4d3d28;
+  --muted: #7a6a4c;
+  --line: #b8a37c;
+  --control-line: #9c875e;
+  --accent: #8a6516;
+  --accent-2: #5b3f7a;
+  --card: #d8c49a;
+  --shadow: rgba(70, 50, 20, .2);
+  --rubric: #94392c;
+  --sigil: rgba(138, 101, 22, .55);
+  --sigil-soft: rgba(138, 101, 22, .13);
+  --hairline: rgba(138, 101, 22, .26);
+  --glow-rgb: 138, 101, 22;
+  --accent-soft: rgba(138, 101, 22, .22);
+  --selection: rgba(138, 101, 22, .22);
+  --rule: rgba(120, 95, 40, .16);
+  --vignette: rgba(90, 65, 25, .2);
+  --rays: rgba(138, 101, 22, .03);
+  --title-grad-from: #2c2114;
+  --title-grad-to: #6b4c14;
+  --ink-flow: #6b4c14;
+  --watermark-opacity: .022;
+  --sheen: rgba(120, 90, 55, .08);
+  --hero-wash: radial-gradient(ellipse at 50% 36%, rgba(255, 248, 225, .42), transparent 70%);
+}
+
+/* ---------- 全局排印：全衬线 + 羊皮纸底 ---------- */
+body {
+  font-family: "Cormorant Garamond", "Noto Serif SC", "Songti SC", serif;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(139, 90, 40, .05), transparent 42%),
+    radial-gradient(ellipse at 88% 82%, rgba(80, 50, 110, .05), transparent 45%);
+  letter-spacing: .2px;
+}
+
+.wrap { width: min(1080px, calc(100% - 72px)); }
+.eyebrow, .muted, .top-banner, .tb-side, .post-meta, .article-end-mark {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* 固定的手稿页框：双线 + 四角饰 */
+.codex-frame {
+  position: fixed;
+  inset: 14px;
+  z-index: 9994;
+  pointer-events: none;
+  border: 1px solid var(--sigil);
+}
+
+.codex-frame::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--sigil-soft);
+}
+
+.codex-frame i {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--accent);
+  opacity: .55;
+}
+
+.cf-tl { top: -4px; left: -4px; border-width: 1px 0 0 1px; }
+.cf-tr { top: -4px; right: -4px; border-width: 1px 1px 0 0; }
+.cf-bl { bottom: -4px; left: -4px; border-width: 0 0 1px 1px; }
+.cf-br { bottom: -4px; right: -4px; border-width: 0 1px 1px 0; }
+
+/* 页边竖排旁注 */
+.marginalia {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  font: 10px "Cinzel", serif;
+  letter-spacing: 5px;
+  color: var(--sigil);
+}
+
+.marginalia span {
+  position: absolute;
+  top: 50%;
+  writing-mode: vertical-rl;
+}
+
+.mg-left { left: 30px; transform: translateY(-50%); }
+.mg-right { right: 30px; transform: translateY(-50%) rotate(180deg); }
+
+/* ---------- 顶栏 ---------- */
+.top-banner {
+  font-family: "Cinzel", serif;
+  letter-spacing: 5px;
+  border-bottom-color: var(--sigil);
+}
+
+.tb-mark { font-size: 12px; animation: none; }
+
+.site-header {
+  border-bottom: 1px solid var(--sigil);
+  font-family: "Cinzel", "Noto Serif SC", serif;
+}
+
+.brand b { letter-spacing: 4px; }
+.brand small { font: 8px "Cinzel", serif; letter-spacing: 2px; }
+.site-header nav a { font-family: "Noto Serif SC", serif; letter-spacing: 2px; }
+
+/* ---------- 扉页 ---------- */
+.hero.folio-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 0;
+  padding: 52px 0 88px;
+  gap: 0;
+  overflow: visible;
+  background: var(--hero-wash);
+}
+
+.folio-title > * {
+  animation: folioIn 1s cubic-bezier(.2, .7, .2, 1) both;
+}
+.folio-title > *:nth-child(1) { animation-delay: .08s; }
+.folio-title > *:nth-child(2) { animation-delay: .16s; }
+.folio-title > *:nth-child(3) { animation-delay: .24s; }
+.folio-title > *:nth-child(4) { animation-delay: .38s; }
+.folio-title > *:nth-child(5) { animation-delay: .48s; }
+.folio-title > *:nth-child(6) { animation-delay: .56s; }
+.folio-title > *:nth-child(7) { animation-delay: .64s; }
+.folio-title > *:nth-child(8) { animation-delay: .72s; }
+
+@keyframes folioIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.folio-astres {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 20px;
+  font: 14px "Cinzel", serif;
+  color: var(--accent);
+  opacity: .75;
+}
+
+.folio-kicker {
+  font: 10px "Cinzel", serif;
+  letter-spacing: 6px;
+  color: var(--muted);
+  margin-bottom: 26px;
+}
+
+/* 中央大图式 */
+.grand-sigil {
+  position: relative;
+  width: min(420px, 76vw);
+  aspect-ratio: 1;
+  margin: 0 auto 24px;
+}
+
+.gs-svg { width: 100%; height: 100%; overflow: visible; }
+.gs-outer, .gs-ring { fill: none; stroke: var(--sigil); stroke-width: 1; }
+.gs-ring { stroke: var(--sigil-soft); }
+
+.gs-ticks {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-dasharray: 1 10.1;
+  opacity: .5;
+  transform-box: view-box;
+  transform-origin: center;
+  animation: gsSpin 180s linear infinite;
+}
+
+.gs-dots {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: .1 79.5;
+  opacity: .65;
+  transform-box: view-box;
+  transform-origin: center;
+  animation: gsSpin 90s linear infinite reverse;
+}
+
+.gs-hexagram polygon {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: .42;
+}
+
+.gs-hexagram {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: gsSpinReverse 120s linear infinite;
+}
+
+.gs-core { fill: rgba(201, 162, 39, .045); stroke: var(--sigil); stroke-width: 1; }
+
+.gs-inf {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px var(--accent-soft)) drop-shadow(0 0 22px var(--accent-soft));
+  animation: infBreathe 7s ease-in-out infinite;
+}
+
+.gs-cardines path { fill: var(--accent); opacity: .6; }
+
+.gs-moon {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  margin-left: -7px;
+  border: 1px solid var(--sigil);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 14px var(--accent-soft);
+}
+
+.gs-moon::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 6px;
+  width: 16px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--paper);
+  animation: moonPhase 32s linear infinite;
+}
+
+@keyframes gsSpin { to { transform: rotate(360deg); } }
+@keyframes gsSpinReverse { to { transform: rotate(-360deg); } }
+@keyframes infBreathe {
+  0%, 100% { opacity: .82; }
+  50% { opacity: 1; }
+}
+
+/* 扉页标题：烫金 */
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.ht-main {
+  font: 600 clamp(46px, 7vw, 92px)/1.2 "Noto Serif SC", serif;
+  letter-spacing: .18em;
+  padding-left: .18em;
+  background: linear-gradient(180deg, var(--title-grad-from), var(--title-grad-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, .35));
+}
+
+.ht-rule {
+  font: 10px "Cinzel", serif;
+  letter-spacing: 8px;
+  color: var(--accent);
+  opacity: .6;
+}
+
+.ht-sub {
+  font: 400 clamp(17px, 2.2vw, 23px)/1.8 "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+}
+
+.ht-sub em { font-style: normal; color: var(--rubric); }
+
+.hero-desc {
+  font: 14px/2.1 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  color: var(--muted);
+  max-width: 560px;
+  margin-top: 22px;
+  opacity: 1;
+}
+
+.text-link { font-family: "Noto Serif SC", serif; margin-top: 26px; }
+
+.folio-colophon {
+  margin-top: 40px;
+  font: 10px "Cinzel", "Noto Serif SC", serif;
+  letter-spacing: 4px;
+  color: var(--muted);
+}
+
+.hero-incantation { bottom: 6px; opacity: .26; }
+
+/* ---------- 章节题头：居中 + 两侧饰线 ---------- */
+.divider { padding: 16px 0; }
+.divider span { font-size: 20px; opacity: .85; }
+
+.codex-heading {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin: 0 auto 34px;
+}
+
+.codex-heading::before,
+.codex-heading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sigil-soft));
+}
+
+.codex-heading::before { left: 0; }
+.codex-heading::after { right: 0; transform: scaleX(-1); }
+
+.codex-heading .eyebrow {
+  font-family: "Cinzel", serif;
+  font-size: 10px;
+  letter-spacing: 6px;
+}
+
+.codex-heading h2 {
+  font: 500 clamp(26px, 3.4vw, 38px)/1.5 "Noto Serif SC", serif;
+  letter-spacing: 4px;
+  margin: 4px 0 0;
+}
+
+.ch-num {
+  font: 400 20px "Cinzel", serif;
+  color: var(--accent);
+  margin-right: 12px;
+  letter-spacing: 0;
+}
+
+.ch-orn { font-size: 14px; color: var(--accent); opacity: .7; }
+.codex-heading .muted { font-family: "Cinzel", serif; letter-spacing: 3px; }
+
+/* 筛选与搜索：收成一条带边框的仪式栏 */
+.toolbar {
+  max-width: 860px;
+  margin: 0 auto 26px;
+  padding: 16px 0;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.filters { justify-content: center; }
+.filter { border-radius: 0; font-family: "Noto Serif SC", serif; }
+.search { font-family: "Noto Serif SC", serif; }
+
+/* ---------- I · 目录式索引（取代现代卡片网格） ---------- */
+.codex-index {
+  max-width: 860px;
+  margin: 0 auto;
+  border-top: 1px solid var(--sigil-soft);
+}
+
+.index-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px 62px 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 12px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  animation: rowIn .7s cubic-bezier(.2, .7, .2, 1) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+  transition: background .35s, padding .35s;
+}
+
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.index-row::before {
+  content: "✦";
+  position: absolute;
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.index-row:hover,
+.index-row:focus-visible { background: rgba(var(--glow-rgb), .045); padding-left: 20px; }
+.index-row:hover::before,
+.index-row:focus-visible::before { opacity: .85; }
+
+.ir-num {
+  font: 400 15px "Cinzel", serif;
+  color: var(--accent);
+  opacity: .7;
+  text-align: center;
+}
+
+.ir-medallion {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--sigil);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--sigil-soft);
+}
+
+.ir-medallion img { width: 100%; height: 100%; object-fit: cover; }
+
+.md-glyph {
+  font: 34px "Cormorant Garamond", serif;
+  line-height: 1;
+  color: var(--accent);
+  opacity: .85;
+}
+.md-life { color: #c08a4e; }
+.md-travel { color: #5b86a8; }
+.md-tech { color: #8b76b5; }
+.md-note { color: #a8635a; }
+
+.ir-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ir-cat { font: 10px "Cinzel", "Noto Serif SC", serif; letter-spacing: 3px; color: var(--rubric); }
+.ir-title {
+  font: 500 clamp(17px, 2vw, 21px)/1.5 "Noto Serif SC", serif;
+  letter-spacing: 1px;
+  color: var(--ink);
+  transition: color .3s;
+}
+.index-row:hover .ir-title { color: var(--accent); }
+.ir-excerpt { font: 12px/1.8 "Noto Serif SC", serif; color: var(--muted); }
+
+.ir-tail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  white-space: nowrap;
+  font: 10px "Cinzel", "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.ir-go { font-size: 16px; color: var(--accent); opacity: .5; transition: transform .3s, opacity .3s; }
+.index-row:hover .ir-go { transform: translateX(4px); opacity: 1; }
+
+/* ---------- II · 四元素方阵 ---------- */
+.element-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.element-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 30px 12px 26px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid var(--sigil-soft);
+  background: var(--card);
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--sigil-soft);
+  transition: border-color .35s, transform .35s, box-shadow .35s;
+}
+
+.element-card::before,
+.element-card::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--accent);
+  opacity: .5;
+}
+.element-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+.element-card::after { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+.element-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 0 34px -16px var(--accent), inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--sigil-soft);
+}
+
+.el-glyph { font: 44px/1 "Cormorant Garamond", serif; color: var(--accent); }
+.el-life .el-glyph { color: #c08a4e; }
+.el-travel .el-glyph { color: #5b86a8; }
+.el-tech .el-glyph { color: #8b76b5; }
+.el-note .el-glyph { color: #a8635a; }
+.el-latin { font: 10px "Cinzel", serif; letter-spacing: 4px; color: var(--muted); }
+.element-card b { font: 500 18px "Noto Serif SC", serif; letter-spacing: 3px; }
+.element-card small { font: 10px "Noto Serif SC", serif; letter-spacing: 2px; color: var(--muted); }
+
+/* ---------- III · 印记页 ---------- */
+.about-leaf {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.about-seal {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--sigil);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 10px var(--paper), inset 0 0 0 11px var(--sigil-soft), 0 0 50px -20px var(--accent);
+}
+
+.as-ring {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, var(--sigil) 0deg .5deg, transparent .5deg 9deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 46%, #000 46% 49%, transparent 49%);
+  mask: radial-gradient(circle, transparent 0 46%, #000 46% 49%, transparent 49%);
+  animation: gsSpin 120s linear infinite;
+}
+
+.as-mark {
+  font: 100px "DM Serif Display", serif;
+  color: var(--accent);
+  text-shadow: 0 0 30px var(--accent-soft);
+}
+
+.as-word {
+  position: absolute;
+  bottom: -34px;
+  font: 9px "Cinzel", serif;
+  letter-spacing: 5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.about-text .eyebrow { font-family: "Cinzel", serif; letter-spacing: 5px; }
+.about-text h2 {
+  font: 500 clamp(24px, 3vw, 34px)/1.6 "Noto Serif SC", serif;
+  letter-spacing: 3px;
+  margin: 10px 0 0;
+}
+
+.about-body {
+  font: 15px/2.3 "Noto Serif SC", serif;
+  color: var(--ink-soft);
+  margin: 24px 0;
+}
+
+/* rubricated 装饰首字母 */
+.about-body::first-letter {
+  float: left;
+  font: 600 2.6em/.9 "Noto Serif SC", serif;
+  color: var(--rubric);
+  margin: 8px 14px 0 0;
+  padding: 8px 12px;
+  border: 1px solid var(--rubric);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px var(--sigil-soft);
+}
+
+/* ---------- IV · 黑镜 ---------- */
+.vision-altar {
+  border: 1px solid var(--sigil-soft);
+  background: var(--card);
+  padding: 40px 24px;
+  box-shadow: inset 0 0 0 6px var(--paper), inset 0 0 0 7px var(--sigil-soft);
+}
+
+.mirror {
+  width: 148px;
+  height: 148px;
+  margin: 0 auto 24px;
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+  background: radial-gradient(circle at 40% 30%, #1b1a1f, #04050a 72%);
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px var(--sigil-soft),
+              inset 0 0 40px rgba(var(--glow-rgb), .12), 0 0 50px -18px var(--accent);
+}
+
+.mirror span {
+  font: 56px "DM Serif Display", serif;
+  color: var(--accent);
+  opacity: .45;
+  animation: sigilPulse 7s ease-in-out infinite;
+}
+
+.vision-altar h3 { font-family: "Noto Serif SC", serif; letter-spacing: 4px; }
+.va-hint { font-family: "Noto Serif SC", serif; }
+.va-btn { border-radius: 0; font-family: "Noto Serif SC", serif; }
+.va-status { font-family: "Noto Serif SC", serif; }
+
+.vision-card {
+  border-color: var(--sigil);
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--sigil-soft);
+}
+
+.vision-frame { border-radius: 50% 50% 3px 3px / 24% 24% 3px 3px; }
+.vision-meta h3, .vision-meta p { font-family: "Noto Serif SC", serif; }
+
+/* ---------- 弹窗：一页展开的手稿 ---------- */
+.article-dialog {
+  max-width: 720px;
+  border: 1px solid var(--sigil);
+  background: var(--paper);
+  padding: 34px min(7vw, 62px) 30px;
+  box-shadow: inset 0 0 0 8px var(--paper), inset 0 0 0 9px var(--sigil-soft),
+              0 30px 90px var(--shadow);
+}
+
+.dialog-orn {
+  text-align: center;
+  font: 11px "Cinzel", serif;
+  letter-spacing: 8px;
+  color: var(--accent);
+  opacity: .7;
+  margin-bottom: 24px;
+}
+
+.article-dialog > .dialog-orn:last-child { margin: 30px 0 0; }
+
+.article-dialog .eyebrow {
+  text-align: center;
+  font-family: "Cinzel", serif;
+  letter-spacing: 4px;
+}
+
+.article-dialog h1 {
+  font: 500 clamp(24px, 3.2vw, 34px)/1.5 "Noto Serif SC", serif;
+  letter-spacing: 2px;
+  text-align: center;
+  color: var(--rubric);
+}
+
+.article-dialog .article-body p:first-of-type::first-letter {
+  color: var(--rubric);
+  padding: 0 10px;
+  border: 1px solid var(--rubric);
+  margin: 6px 12px 0 0;
+  font-size: 2.4em;
+}
+
+.article-nav button { border-radius: 0; font-family: "Noto Serif SC", serif; }
+.article-nav small { font-family: "Cinzel", serif; }
+.copy-link { font-family: "Noto Serif SC", serif; }
+
+/* ---------- 页脚 ---------- */
+.footer { border-top: 1px solid var(--sigil); font-family: "Cinzel", "Noto Serif SC", serif; }
+.footer > span { font-size: 10px; letter-spacing: 3px; }
+.footer a { font-family: "Noto Serif SC", serif; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .marginalia { display: none; }
+  .codex-frame { inset: 8px; }
+  .codex-heading::before, .codex-heading::after { width: 12%; }
+}
+
+@media (max-width: 700px) {
+  .wrap { width: calc(100% - 52px); }
+  .hero.folio-title { padding: 34px 0 68px; }
+  .grand-sigil { width: min(300px, 72vw); }
+  .folio-astres { gap: 14px; font-size: 11px; }
+  .folio-kicker { font-size: 8px; letter-spacing: 3px; }
+  .ht-main { letter-spacing: .12em; padding-left: .12em; }
+  .ht-rule { letter-spacing: 4px; }
+  .toolbar { flex-direction: column; align-items: center; gap: 14px; }
+  .index-row { grid-template-columns: 30px 44px 1fr; gap: 12px; padding: 18px 4px; }
+  .ir-medallion { width: 44px; height: 44px; }
+  .md-glyph { font-size: 26px; }
+  .ir-tail { display: none; }
+  .element-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .about-leaf { grid-template-columns: 1fr; gap: 46px; text-align: center; }
+  .about-seal { width: 190px; height: 190px; }
+  .as-mark { font-size: 70px; }
+  .about-body { text-align: left; }
+  .vision-grid { grid-template-columns: 1fr; }
+  .mirror { width: 112px; height: 112px; }
+  .mirror span { font-size: 42px; }
+  .article-dialog { padding: 28px 22px; }
+  .codex-frame { inset: 6px; }
+}
+
+@media (max-width: 420px) {
+  .index-row { grid-template-columns: 26px 1fr; }
+  .ir-medallion { display: none; }
+  .site-header nav { gap: 8px; }
+  .el-glyph { font-size: 34px; }
+}
+
+/* ---------- 降级 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .gs-ticks, .gs-dots, .gs-hexagram, .gs-inf, .gs-moon::after,
+  .as-ring, .mirror span, .folio-title > *, .index-row,
+  .mists, .hero-incantation, .stardust { animation: none !important; }
+  .folio-title > *, .index-row { opacity: 1 !important; transform: none !important; }
+  .mists { opacity: .5; }
+}
+
+@media print {
+  .codex-frame, .marginalia, .grand-sigil, .about-seal, .mirror,
+  .top-banner, .mists, .stardust, .vignette, .hero-incantation,
+  .element-grid, .vision-grid, .vision-altar, .ir-medallion { display: none !important; }
+  .hero.folio-title { padding: 10px 0; background: none !important; }
+  .index-row { animation: none; }
+  body { background-image: none !important; }
+}
+
+@media (prefers-contrast: more) {
+  :root { --line: #8a7a55; --muted: #d8cba8; --sigil: rgba(240, 210, 120, .8); }
+  :root.light { --line: #8a7450; --muted: #4a3a20; --sigil: rgba(90, 65, 10, .8); }
+}

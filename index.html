@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- SEO -->
-  <meta name="description" content="永不完结 — 铜香哭哭死的个人站点。写生活、路上的事、代码和翻过的书，不追热点，也不打算写完。">
+  <meta name="description" content="永不完结 — 铜香哭哭死的手稿。写生活、路上的事、代码和翻过的书，不追热点，也不打算写完。">
   <meta name="author" content="铜香哭哭死">
-  <meta name="keywords" content="永不完结,铜香哭哭死,个人博客,生活,旅行,技术,随笔">
+  <meta name="keywords" content="永不完结,铜香哭哭死,个人博客,手稿,生活,旅行,技术,随笔">
   <meta name="robots" content="index, follow">
   <title>永不完结 — 铜香哭哭死</title>
   <link rel="canonical" href="https://TM010909.github.io/">
-  <meta name="theme-color" content="#0d1014" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#e8dcc3" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0907" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#e5d4ac" media="(prefers-color-scheme: light)">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -63,15 +63,15 @@
   }
   </script>
 
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='none' stroke='%23caa75e' stroke-width='2'/><text y='.9em' font-size='72' fill='%23caa75e' x='14'>∞</text></svg>">
+  <!-- Favicon：封印之中的 ∞ -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%23c9a227' stroke-width='2'/><circle cx='50' cy='50' r='38' fill='none' stroke='%23c9a227' stroke-width='1' opacity='.5'/><text y='.92em' font-size='68' fill='%23c9a227' x='16'>∞</text></svg>">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Serif+Display&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- 在任何绘制之前应用已保存的主题，避免浅色用户刷新时闪一下深色 -->
+  <!-- 在任何绘制之前应用已保存的主题，避免刷新闪烁 -->
   <script>
     try {
       if (localStorage.getItem("ybwj-theme") === "light") {
@@ -83,11 +83,29 @@
 </head>
 <body id="top">
 
-<a class="skip-link" href="#latest">跳到文章</a>
+<a class="skip-link" href="#latest">跳到正文</a>
 
-<!-- 顶部题词横幅：缓慢流动的刊头题词 -->
+<!-- 手稿页框：固定双线边与四角饰 -->
+<div class="codex-frame" aria-hidden="true">
+  <i class="cf-tl"></i><i class="cf-tr"></i><i class="cf-bl"></i><i class="cf-br"></i>
+</div>
+<div class="marginalia" aria-hidden="true">
+  <span class="mg-left">☿ · ☽ · ♄ · ☉</span>
+  <span class="mg-right">LIBER PERPETUUS</span>
+</div>
+
+<!-- 薄雾 / 纸张颗粒 / 暗角 / 星尘 / 光晕 / 进度 / 生长的墨线 -->
+<div class="mists" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="stardust" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<div class="ink-thread" id="inkThread" aria-hidden="true"></div>
+
+<!-- 顶部符咒带 -->
 <div class="top-banner" id="topBanner" aria-hidden="true">
-  <span class="tb-mark">∞</span>
+  <span class="tb-mark">✦</span>
   <div class="tb-track">
     <div class="tb-marquee">
       <span>故事还没有写完</span><i>✦</i>
@@ -100,209 +118,198 @@
       <span>一直写下去</span><i>✦</i>
     </div>
   </div>
-  <span class="tb-side">EST. 2026</span>
+  <span class="tb-side">ANNO MMXXVI</span>
 </div>
-
-<!-- 薄雾 / 纸张颗粒 / 暗角 / 星尘 / 光晕 / 阅读进度 / 生长的墨线 -->
-<div class="mists" aria-hidden="true"></div>
-<div class="vignette" aria-hidden="true"></div>
-<div class="grain" aria-hidden="true"></div>
-<div class="stardust" aria-hidden="true"></div>
-<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-<div class="ink-thread" id="inkThread" aria-hidden="true"></div>
 
 <header class="site-header wrap">
   <a class="brand" href="#top">
     <span class="brand-mark">∞</span>
-    <span>
-      <b>永不完结</b>
-      <small>铜香哭哭死</small>
-    </span>
+    <span><b>永不完结</b><small>铜香哭哭死</small></span>
   </a>
 
   <nav>
-    <a href="#latest">文章</a>
-    <a href="#categories">分类</a>
-    <a href="#visions">影像</a>
-    <a href="#about">关于</a>
+    <a href="#latest">目录</a>
+    <a href="#categories">四元素</a>
+    <a href="#visions">显影</a>
+    <a href="#about">印记</a>
   </nav>
 
   <button id="themeToggle" class="icon-btn" aria-label="切换日间模式">◐</button>
 </header>
 
+<main>
 
-  <main>
-
-<section class="hero wrap">
-  <div class="hero-watermark" aria-hidden="true">∞</div>
-
-  <div class="hero-masthead">
-    <span>JOURNAL</span>
-    <span class="hero-masthead-right">ISSUE 001 · 2026</span>
+<!-- ══════════ 扉页 TITLE PAGE ══════════ -->
+<section class="hero wrap folio-title" id="frontispiece">
+  <div class="folio-astres" aria-hidden="true">
+    <span>☾</span><span>✦</span><span>☉</span><span>✦</span><span>☽</span>
   </div>
 
-  <div class="hero-copy">
-    <h1>
-      <span class="hl">故事</span>
-      <span class="hl">还没有写完，</span>
-      <em class="hl-sub">也不打算写完。</em>
-    </h1>
+  <p class="folio-kicker">LIBER PERPETUUS · FOLIO I · ANNO MMXXVI</p>
 
-    <p class="hero-desc">
-      走过的路，写坏的代码，<br>
-      翻到一半的书，和夜里冒出来的念头。
-    </p>
-
-    <a class="text-link" href="#latest">
-      从最近写的开始 <span>↗</span>
-    </a>
-  </div>
-
-  <!-- 密教符印：放射光、刻度环、月相、四角星芒，中心是正在写的 ∞ -->
-  <div class="hero-art" aria-hidden="true">
-    <div class="hero-glow"></div>
-    <div class="sigil-rays"></div>
-    <div class="notebook-lines"></div>
-    <div class="hero-art-ring ring-1"></div>
-    <div class="hero-art-ring ring-2"></div>
-    <div class="hero-art-ring ring-3"></div>
-    <div class="sigil-seal"></div>
-    <div class="sigil-moon"></div>
-    <div class="sigil-corners"><i></i><i></i><i></i><i></i></div>
-
-    <svg class="ink-path" viewBox="0 0 280 120">
-      <path class="ink-trail-soft"
-            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
-      <path id="inkStroke" class="ink-trail" pathLength="1000"
-            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
-      <path class="ink-flow" pathLength="1000"
-            d="M140 60 C175 12 226 12 226 60 C226 108 175 108 140 60 C105 12 54 12 54 60 C54 108 105 108 140 60 Z" />
-      <circle class="ink-tip" r="5">
-        <animateMotion dur="6s" repeatCount="indefinite">
-          <mpath href="#inkStroke" />
-        </animateMotion>
-      </circle>
+  <!-- 中央大图式：刻度天球 + 六芒星 + 中心 ∞ -->
+  <div class="grand-sigil" aria-hidden="true">
+    <svg class="gs-svg" viewBox="0 0 400 400">
+      <circle class="gs-outer" cx="200" cy="200" r="190"/>
+      <circle class="gs-outer" cx="200" cy="200" r="181"/>
+      <circle class="gs-ticks" cx="200" cy="200" r="170"/>
+      <circle class="gs-dots" cx="200" cy="200" r="152"/>
+      <circle class="gs-ring" cx="200" cy="200" r="138"/>
+      <g class="gs-hexagram">
+        <polygon points="200,66 316,267 84,267"/>
+        <polygon points="200,334 84,133 316,133"/>
+      </g>
+      <circle class="gs-ring" cx="200" cy="200" r="92"/>
+      <circle class="gs-core" cx="200" cy="200" r="58"/>
+      <path class="gs-inf"
+            d="M200 200 C222 170 260 170 260 200 C260 230 222 230 200 200 C178 170 140 170 140 200 C140 230 178 230 200 200 Z"/>
+      <g class="gs-cardines">
+        <path d="M200 4 L209 20 L191 20 Z"/>
+        <path d="M200 396 L209 380 L191 380 Z"/>
+        <path d="M4 200 L20 191 L20 209 Z"/>
+        <path d="M396 200 L380 191 L380 209 Z"/>
+      </g>
     </svg>
-
-    <div class="hero-art-orbit"></div>
+    <span class="gs-moon"></span>
   </div>
 
-  <!-- 行星符咒带 -->
+  <h1 class="hero-title">
+    <span class="ht-main">永不完结</span>
+    <span class="ht-rule" aria-hidden="true">✦ ───────── ✦</span>
+    <span class="ht-sub">故事还没有写完，<em>也不打算写完。</em></span>
+  </h1>
+
+  <p class="hero-desc">走过的路，写坏的代码，翻到一半的书，和夜里冒出来的念头。</p>
+
+  <a class="text-link" href="#latest">翻开第一页 <span>❧</span></a>
+
+  <p class="folio-colophon">✦　铜香哭哭死 · 手写于二〇二六　✦</p>
   <div class="hero-incantation" aria-hidden="true">☉ ☽ ☿ ♀ ♁ ♂ ♃ ♄ ☉ ☽ ☿ ♀ ♁ ♂ ♃ ♄</div>
 </section>
 
+<div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
-    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
+<!-- ══════════ I · 目录 TABULA ══════════ -->
+<section id="latest" class="wrap section codex-section">
+  <header class="codex-heading" data-reveal>
+    <span class="ch-orn" aria-hidden="true">✦</span>
+    <p class="eyebrow">TABULA RERUM</p>
+    <h2><span class="ch-num">I</span> 写下来的</h2>
+    <span class="muted" id="postCount" aria-live="polite">共 4 篇</span>
+  </header>
 
-    <section id="latest" class="wrap section">
-      <div class="section-heading" data-reveal>
-        <span class="sh-num">I</span>
-        <div class="sh-body">
-          <p class="eyebrow">WRITINGS</p>
-          <h2>写下来的</h2>
-        </div>
-        <span class="muted" id="postCount" aria-live="polite">共 4 篇</span>
-      </div>
-      <div class="toolbar" data-reveal>
-        <div id="filters" class="filters"></div>
-        <label class="search">
-          <span>⌕</span>
-          <input id="searchInput" type="search" placeholder="找点什么…" aria-label="搜索文章">
-          <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
-        </label>
-      </div>
-      <div id="postGrid" class="post-grid"></div>
-      <p id="emptyState" class="empty hidden">没找到。换个词，或者看看别的分类。</p>
-    </section>
+  <div class="toolbar" data-reveal>
+    <div id="filters" class="filters"></div>
+    <label class="search">
+      <span>⌕</span>
+      <input id="searchInput" type="search" placeholder="翻找一页…" aria-label="搜索文章">
+      <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
+    </label>
+  </div>
 
-    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
+  <div id="postGrid" class="codex-index"></div>
+  <p id="emptyState" class="empty hidden">没找到。换个词，或者看看别的分类。</p>
+</section>
 
-    <section id="categories" class="wrap category-feature" data-reveal>
-      <div class="cf-head">
-        <span class="sh-num">II</span>
-        <div>
-          <p class="eyebrow">BY TOPIC</p>
-          <h2>写得不多，<br><em>但都在这儿。</em></h2>
-        </div>
-      </div>
-      <div class="category-list">
-        <a href="#latest" data-category-link="生活"><span>I</span>生活 <b>↗</b></a>
-        <a href="#latest" data-category-link="旅行"><span>II</span>旅行 <b>↗</b></a>
-        <a href="#latest" data-category-link="技术"><span>III</span>技术 <b>↗</b></a>
-        <a href="#latest" data-category-link="随笔"><span>IV</span>随笔 <b>↗</b></a>
-      </div>
-    </section>
+<div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
-    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
+<!-- ══════════ II · 四元素 QUATTUOR ELEMENTA ══════════ -->
+<section id="categories" class="wrap section codex-section" data-reveal>
+  <header class="codex-heading">
+    <p class="eyebrow">QUATTUOR ELEMENTA</p>
+    <h2><span class="ch-num">II</span> 四元素</h2>
+  </header>
 
-    <section id="about" class="wrap about">
-      <!-- 一封还没写完的信 -->
-      <div class="about-art" aria-hidden="true" data-reveal>
-        <div class="letter-sheet letter-sheet-back"></div>
-        <div class="letter-sheet letter-sheet-front">
-          <div class="letter-stamp">∞</div>
-          <div class="letter-lines">
-            <i></i><i></i><i></i><i></i><i></i>
-          </div>
-          <div class="letter-postmark">NEVER<br>ENDING<br>2026</div>
-          <div class="letter-sign">铜香哭哭死</div>
-        </div>
-      </div>
-      <div data-reveal>
-        <span class="sh-num sh-num-inline">III</span>
-        <p class="eyebrow">COLOPHON · 关于</p>
-        <h2>没有主题，<br><em>也没打算有。</em></h2>
-        <p>我是铜香哭哭死。这个站没有更新计划，也不设栏目目标——生活、路上、代码、读过的书，想到什么就放什么。写得不勤，但会一直写下去。多年以后回来看，希望还能认出当时那个较真的自己。</p>
-        <a class="text-link" href="mailto:1219093662@qq.com">写信给我 <span>↗</span></a>
-      </div>
-    </section>
-
-    <div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
-
-    <section id="visions" class="wrap visions">
-      <div class="section-heading" data-reveal>
-        <span class="sh-num">IV</span>
-        <div class="sh-body">
-          <p class="eyebrow">SPECTRA</p>
-          <h2>显影</h2>
-        </div>
-        <span class="muted" id="visionCount" aria-live="polite">共 0 帧</span>
-      </div>
-
-      <div class="vision-grid" id="visionGrid"></div>
-
-      <!-- 投影片的祭坛：本地预览，不上传服务器 -->
-      <div class="vision-altar" id="visionAltar" data-reveal>
-        <span class="va-sigil" aria-hidden="true">✦</span>
-        <h3>投进一段影</h3>
-        <p class="va-hint">选择或拖入视频，只在此处显影 · 不会上传到任何地方</p>
-        <label class="va-btn" for="visionInput">选择视频</label>
-        <input id="visionInput" type="file" accept="video/*" hidden>
-        <p class="va-status" id="visionStatus" aria-live="polite"></p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="wrap footer">
-    <a class="brand" href="#top">
-      <span class="brand-mark">∞</span>
-      <span><b>永不完结</b><small>铜香哭哭死</small></span>
+  <div class="element-grid">
+    <a href="#latest" data-category-link="生活" class="element-card el-life">
+      <span class="el-glyph" aria-hidden="true">▽</span>
+      <span class="el-latin">TERRA</span>
+      <b>生活</b>
+      <small>土 · 琥珀</small>
     </a>
-    <span>© 2026 永不完结 · 铜香哭哭死</span>
-    <a href="#top">回到顶部 ↑</a>
-  </footer>
+    <a href="#latest" data-category-link="旅行" class="element-card el-travel">
+      <span class="el-glyph" aria-hidden="true">▽</span>
+      <span class="el-latin">AQUA</span>
+      <b>旅行</b>
+      <small>水 · 靛青</small>
+    </a>
+    <a href="#latest" data-category-link="技术" class="element-card el-tech">
+      <span class="el-glyph" aria-hidden="true">△</span>
+      <span class="el-latin">AER</span>
+      <b>技术</b>
+      <small>气 · 紫水晶</small>
+    </a>
+    <a href="#latest" data-category-link="随笔" class="element-card el-note">
+      <span class="el-glyph" aria-hidden="true">△</span>
+      <span class="el-latin">IGNIS</span>
+      <b>随笔</b>
+      <small>火 · 朱砂</small>
+    </a>
+  </div>
+</section>
 
-  <button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
+<div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
 
-  <dialog id="articleDialog" class="article-dialog" aria-label="文章阅读">
-    <div class="article-read-progress" id="articleReadProgress" aria-hidden="true"></div>
-    <button class="dialog-close" id="closeDialog" aria-label="关闭">×</button>
-    <div id="articleContent"></div>
-  </dialog>
+<!-- ══════════ III · 印记 COLOPHON ══════════ -->
+<section id="about" class="wrap section codex-section about-leaf">
+  <div class="about-seal" aria-hidden="true">
+    <span class="as-ring"></span>
+    <span class="as-mark">∞</span>
+    <span class="as-word">PERPETUUM · PERPETUUM · PERPETUUM</span>
+  </div>
 
-  <script src="assets/posts.js"></script>
-  <script src="assets/videos.js"></script>
-  <script src="assets/main.js"></script>
+  <div class="about-text" data-reveal>
+    <p class="eyebrow">COLOPHON · SIGILLUM</p>
+    <h2><span class="ch-num">III</span> 关于这里，和我</h2>
+    <p class="about-body">我是铜香哭哭死。这个站没有更新计划，也不设栏目目标——生活、路上、代码、读过的书，想到什么就放什么。写得不勤，但会一直写下去。多年以后回来看，希望还能认出当时那个较真的自己。</p>
+    <a class="text-link" href="mailto:1219093662@qq.com">写信给我 <span>↗</span></a>
+  </div>
+</section>
+
+<div class="divider wrap" aria-hidden="true" data-reveal><span>∞</span></div>
+
+<!-- ══════════ IV · 黑镜 SPECULUM ══════════ -->
+<section id="visions" class="wrap section codex-section">
+  <header class="codex-heading" data-reveal>
+    <p class="eyebrow">SPECULUM NIGRUM</p>
+    <h2><span class="ch-num">IV</span> 显影</h2>
+    <span class="muted" id="visionCount" aria-live="polite">共 0 帧</span>
+  </header>
+
+  <div class="vision-grid" id="visionGrid"></div>
+
+  <div class="vision-altar" id="visionAltar" data-reveal>
+    <div class="mirror" aria-hidden="true"><span>∞</span></div>
+    <h3>投进一段影</h3>
+    <p class="va-hint">选择或拖入视频，只在此处显影 · 不会上传到任何地方</p>
+    <label class="va-btn" for="visionInput">选择视频</label>
+    <input id="visionInput" type="file" accept="video/*" hidden>
+    <p class="va-status" id="visionStatus" aria-live="polite"></p>
+  </div>
+</section>
+</main>
+
+<footer class="wrap footer">
+  <a class="brand" href="#top">
+    <span class="brand-mark">∞</span>
+    <span><b>永不完结</b><small>铜香哭哭死</small></span>
+  </a>
+  <span>✦　© MMXXVI 永不完结 · 铜香哭哭死　✦</span>
+  <a href="#top">回到卷首 ↑</a>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
+
+<dialog id="articleDialog" class="article-dialog" aria-label="文章阅读">
+  <div class="dialog-orn" aria-hidden="true">✦ ───── ∞ ───── ✦</div>
+  <div class="article-read-progress" id="articleReadProgress" aria-hidden="true"></div>
+  <button class="dialog-close" id="closeDialog" aria-label="关闭">×</button>
+  <div id="articleContent"></div>
+  <div class="dialog-orn" aria-hidden="true">✦ ───── ∞ ───── ✦</div>
+</dialog>
+
+<script src="assets/posts.js"></script>
+<script src="assets/videos.js"></script>
+<script src="assets/main.js"></script>
 </body>
 </html>
